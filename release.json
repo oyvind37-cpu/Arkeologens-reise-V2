@@ -1,13 +1,34 @@
 {
-  "version": "5.5.0",
-  "base_version": "5.4.0",
-  "date": "2026-08-08",
-  "title": "Trusselbrevet og Herr X",
-  "notes": [
-    "Prolog utvidet fra 7 til 9 scener",
-    "Mykere fade-overganger",
-    "Anonymt trusselbrev før avreise",
-    "Første glimt av den ukjente Herr X",
-    "Stabilt v5.4.0-gameplay beholdt"
-  ]
+  "name": "Arkeologens Reise",
+  "version": "5.5.5",
+  "entry": "index.html",
+  "platform": "HTML5 / GitHub Pages",
+  "prologue_scenes": 9,
+  "files": [
+    "aurora_character_v521.png",
+    "aurora_face.jpg",
+    "compass_v521.png",
+    "game.js",
+    "icon-180.png",
+    "icon-512.png",
+    "index.html",
+    "intro.png",
+    "manifest.webmanifest",
+    "prologue_01_cinema.mp4",
+    "prologue_02_cinema.mp4",
+    "prologue_03_cinema.mp4",
+    "prologue_04_cinema.mp4",
+    "prologue_05_v537.mp4",
+    "prologue_05_warning.mp4",
+    "prologue_06_shadow.mp4",
+    "prologue_06_v538.mp4",
+    "prologue_07_cinema.mp4",
+    "release.json",
+    "style.css",
+    "temple.jpg"
+  ],
+  "keep_in_github": [
+    "mystisk_musikk.mp3"
+  ],
+  "notes": "Safari/gravkammer hotfix: kompasset nullstilles for ny reise og vises tydelig over gullkisten. Fullskjermknappen flyttes bort fra HUD-tekst på mobil."
 }

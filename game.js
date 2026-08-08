@@ -136,11 +136,6 @@ const prologueKicker=$("prologueKicker");
 const prologueTitle=$("prologueTitle");
 const prologueText=$("prologueText");
 const prologueStep=$("prologueStep");
-const prologueTotal=$("prologueTotal");
-const prologueFade=$("prologueFade");
-const storyOverlay=$("storyOverlay");
-const threatLetter=$("threatLetter");
-const watcherReveal=$("watcherReveal");
 const prologueBack=$("prologueBack");
 const prologueNext=$("prologueNext");
 const prologueSkip=$("prologueSkip");
@@ -174,97 +169,69 @@ const prologueScenes=[
     kicker:"FUNNET",
     title:"To forseglede pergamentruller",
     video:"prologue_04_cinema.mp4",
-    text:"I esken ligger to gamle ruller, begge bundet med bånd og preget med seglet til en ukjent farao. Seglene er intakte – og ingen ønsker å bryte dem."
+    text:"I esken ligger to gamle ruller, begge bundet med bånd og preget med seglet til en ukjent farao. Aurora bestemmer seg for å reise til Egypt og undersøke funnet."
   },
   {
     kicker:"OSLO · KVELDEN FØR AVREISE",
     title:"Et brev uten avsender",
-    video:"prologue_01_clean.mp4",
-    overlay:"letter",
-    text:"En konvolutt ligger innenfor døren. Ingen frimerker. Ingen avsender. Aurora leser advarselen, fotograferer det ukjente merket og legger brevet i feltdagboken. «Noen har levert dette personlig.»"
+    video:"prologue_05_warning.mp4",
+    text:"Et umerket brev ligger og venter: «HOLD DEG UNNA KONGENES DAL. Noen graver bør forbli uåpnet. Dette er din eneste advarsel.» Nederst er et ukjent symbol. Aurora fotograferer brevet og legger det i feltdagboken."
   },
   {
-    kicker:"NOEN FØLGER MED",
-    title:"En skikkelse i skyggene",
-    video:"prologue_02_clean.mp4",
-    overlay:"watcher",
-    text:"Neste morgen forlater Aurora Oslo. På avstand følger en ukjent mann henne med blikket. Ansiktet er skjult. Han tar opp telefonen og sier bare to ord: «Hun dro.»"
+    kicker:"OSLO LUFTHAVN · NESTE MORGEN",
+    title:"Noen følger etter",
+    video:"prologue_06_shadow.mp4",
+    text:"Aurora merker ingenting. En mann holder avstand og følger henne med blikket. Ansiktet forblir skjult. Når hun går mot gaten, løfter han telefonen: «Hun dro.»"
   },
   {
     kicker:"DET EGYPTISKE MUSEUM · KAIRO",
     title:"Undersøk de forseglede rullene",
     video:"prologue_05_v537.mp4",
     interactive:"scan",
-    text:"I Kairo venter den nye skanneren. Den kan lese lagene i rullen uten å bryte seglet. Start analysen og se om tegnene fortsatt kan gjenfinnes."
+    text:"I Kairo kan den nye skanneren lese lagene i rullen uten å bryte seglet. Start analysen og se om tegnene fortsatt kan gjenfinnes."
   },
   {
     kicker:"KOORDINATENE",
     title:"Analysen gir et resultat",
     video:"prologue_06_v538.mp4",
-    text:"Blant tegnene dukker det opp lengde- og breddegrader. De peker mot et punkt langt ute i ørkenen, utenfor de kjente funnstedene. Aurora bestemmer seg for å undersøke stedet – og sier ingenting om brevet."
+    text:"Blant tegnene dukker det opp lengde- og breddegrader. De peker mot et punkt langt ute i ørkenen, utenfor de kjente funnstedene. Aurora bestemmer seg for å undersøke stedet."
   },
   {
     kicker:"UT I ØRKENEN",
     title:"Reisen begynner",
     video:"prologue_07_cinema.mp4",
-    text:"Museet skaffer en erfaren kamelfører de stoler på. Sammen forlater Aurora Kairo og setter kurs mot det ukjente punktet. Langt bak dem starter en annen reisende samme vei."
+    text:"Museet skaffer en erfaren kamelfører de stoler på. Sammen forlater Aurora Kairo og setter kurs mot det ukjente punktet – uten å vite at noen andre også følger sporet."
   }
 ];
 let prologueIndex=0;
 
-function setStoryOverlay(type){
-  if(!storyOverlay)return;
-  storyOverlay.classList.remove("active","show-letter","show-watcher");
-  storyOverlay.setAttribute("aria-hidden","true");
-  if(!type)return;
-  storyOverlay.setAttribute("aria-hidden","false");
-  storyOverlay.classList.add("active", type==="letter"?"show-letter":"show-watcher");
-}
+function renderPrologue(){
+  const scene=prologueScenes[prologueIndex];
+  prologueKicker.textContent=scene.kicker;
+  prologueTitle.textContent=scene.title;
+  prologueText.textContent=scene.text;
+  prologueStep.textContent=String(prologueIndex+1);
+  prologueBack.disabled=prologueIndex===0;
 
-function playCurrentPrologueVideo(scene){
+  scanRunning=false;
+  scanComplete=false;
+  if(scanOverlay){
+    scanOverlay.classList.remove("active","complete");
+    scanOverlay.setAttribute("aria-hidden","true");
+  }
+  if(scanStatus) scanStatus.textContent="SKANNER LAGENE …";
+
+  if(scene.interactive==="scan"){
+    prologueNext.textContent="START SKANNING";
+  }else{
+    prologueNext.textContent=prologueIndex===prologueScenes.length-1?"REIS TIL EGYPT":"FORTSETT";
+  }
+
   prologueVideo.pause();
   prologueVideo.src=scene.video;
   prologueVideo.currentTime=0;
   const p=prologueVideo.play();
   if(p && p.catch) p.catch(()=>{});
-}
-
-function renderPrologue({transition=true}={}){
-  const scene=prologueScenes[prologueIndex];
-  const applyScene=()=>{
-    prologueKicker.textContent=scene.kicker;
-    prologueTitle.textContent=scene.title;
-    prologueText.textContent=scene.text;
-    prologueStep.textContent=String(prologueIndex+1);
-    if(prologueTotal) prologueTotal.textContent=String(prologueScenes.length);
-    prologueBack.disabled=prologueIndex===0;
-
-    scanRunning=false;
-    scanComplete=false;
-    if(scanOverlay){
-      scanOverlay.classList.remove("active","complete");
-      scanOverlay.setAttribute("aria-hidden","true");
-    }
-    if(scanStatus) scanStatus.textContent="SKANNER LAGENE …";
-    setStoryOverlay(scene.overlay || null);
-
-    if(scene.interactive==="scan"){
-      prologueNext.textContent="START SKANNING";
-    }else{
-      prologueNext.textContent=prologueIndex===prologueScenes.length-1?"REIS TIL EGYPT":"FORTSETT";
-    }
-    playCurrentPrologueVideo(scene);
-  };
-
-  if(!transition || !prologueFade){
-    applyScene();
-    return;
-  }
-  prologueFade.classList.add("active");
-  setTimeout(()=>{
-    applyScene();
-    requestAnimationFrame(()=>setTimeout(()=>prologueFade.classList.remove("active"),80));
-  },360);
 }
 
 function beginEgypt(){
@@ -279,10 +246,13 @@ function beginEgypt(){
 }
 
 function openPrologue(){
+  // v5.5.4: A new journey must always allow the compass to be discovered again.
+  storage.remove("aurora_compass_v521");
+  compassCollected=false;
   if(fullscreenBtn) fullscreenBtn.style.display="none";
   show(prologue);
   prologueIndex=0;
-  renderPrologue({transition:false});
+  renderPrologue();
   startMusic().catch(error=>console.log("Musikken kunne ikke starte, men introen fortsetter.",error));
 }
 
@@ -342,14 +312,9 @@ prologueBack.onclick=()=>{
 };
 prologueSkip.onclick=beginEgypt;
 
-// v5.5.1: Safari must never auto-skip story cards when a background clip ends.
-// Every prologue scene now stays visible until the player presses FORTSETT.
 prologueVideo.addEventListener("ended",()=>{
-  if(!prologue.classList.contains("active")) return;
-  try {
-    prologueVideo.pause();
-    // Keep the final frame on screen. No automatic scene advance.
-  } catch(e) {}
+  // v5.5.2: Safari skal aldri hoppe automatisk til neste prologscene.
+  // Spilleren går videre med FORTSETT, slik at alle 9 scener vises.
 });
 
 
@@ -546,6 +511,10 @@ function chamberSay(text){chamberText.textContent=text}
 function chamberGoal(text,n){chamberObjective.textContent=text;chamberProgress.textContent=n+" / 3"}
 
 enterChamberBtn.onclick=()=>{
+  // v5.5.4 Safari fix: never hide the compass because of stale localStorage from an older play-through.
+  compassCollected=false;
+  storage.remove("aurora_compass_v521");
+  compassArtifact.style.display="block";
   enterChamberBtn.classList.add("hidden");
   cinematicBars.classList.remove("hidden");
   cinematicBars.classList.add("active");
@@ -649,6 +618,12 @@ $("chamberInspect").onclick=()=>{
       return;
     }
     chamberStage=3;
+    // v5.5.5: lock Aurora in front of the chest during the compass interaction.
+    chamberLeft=false; chamberRight=false; chamberVelocity=0;
+    chamberX=40;
+    chamberAurora.style.left=chamberX+"%";
+    chamberAurora.classList.remove("walk","face-left","start-step");
+    chamberAurora.classList.add("compass-front");
     treasureChest.classList.add("open");
     compassArtifact.classList.add("show");
     chamberGoal("Ta opp kompasset",3);
@@ -658,6 +633,8 @@ $("chamberInspect").onclick=()=>{
 
 compassArtifact.onclick=()=>{
   if(chamberStage!==3 || compassCollected)return;
+  chamberLeft=false; chamberRight=false; chamberVelocity=0;
+  chamberAurora.classList.add("compass-front","compass-reach");
   compassArtifact.classList.add("collected");
   setTimeout(()=>show(journal),450);
 };
@@ -668,6 +645,7 @@ $("closeJournal").onclick=()=>{
     storage.set("aurora_compass_v521","yes");
   }
   show(chamber);
+  chamberAurora.classList.remove("compass-reach");
   compassArtifact.classList.add("collected");
   treasureChest.classList.add("finished");
   inventoryBadge.classList.remove("hidden");
@@ -697,6 +675,13 @@ $("closeJournal").onclick=()=>{
 let chamberVelocity=0;
 function chamberLoop(){
   if(chamber.classList.contains("active")){
+    if(chamberStage===3 && !compassCollected){
+      chamberLeft=false; chamberRight=false; chamberVelocity=0;
+      chamberX=40; chamberAurora.style.left=chamberX+"%";
+      chamberAurora.classList.remove("walk","face-left","start-step");
+      chamberAurora.classList.add("compass-front");
+      requestAnimationFrame(chamberLoop); return;
+    }
     const accelerating=chamberLeft||chamberRight;
 
     if(chamberLeft){
@@ -757,7 +742,12 @@ desertHold("desertRight","right");
 $("desertInspect").onclick=()=>{
   desertAurora.classList.add("face-left");
   desertSay("Historien har ventet i tre tusen år. Nå skal den dokumenteres med respekt.");
-  setTimeout(()=>desertAurora.classList.remove("face-left"),1800);
+  setTimeout(()=>{
+    desertAurora.classList.remove("face-left");
+    chapterComplete.classList.remove("hidden");
+    chapterComplete.classList.add("ending-photo");
+    if(fullscreenBtn) fullscreenBtn.style.display="none";
+  },900);
 };
 
 function desertLoop(){
