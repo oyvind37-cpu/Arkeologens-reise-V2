@@ -1,0 +1,16 @@
+{
+  "name": "Arkeologens Reise",
+  "version": "5.3.9",
+  "entry": "index.html",
+  "platform": "HTML5 / GitHub Pages",
+  "files": [
+    "aurora_face.jpg",
+    "game.js",
+    "index.html",
+    "intro.png",
+    "style.css",
+    "temple.jpg",
+    "mystisk_musikk.mp3"
+  ],
+  "notes": "Mobile gameplay repair. Prologue remains unchanged. Egypt HUD/dialog/controls are separated on portrait iPhone. Chamber gets a protected central stage, visible wall/floor depth, isolated HUD and dialog rows, puzzle moved into scene, controls fixed to bottom, and Aurora/chest/compass z-order corrected."
+}
