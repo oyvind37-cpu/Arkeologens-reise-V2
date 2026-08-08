@@ -342,14 +342,14 @@ prologueBack.onclick=()=>{
 };
 prologueSkip.onclick=beginEgypt;
 
+// v5.5.1: Safari must never auto-skip story cards when a background clip ends.
+// Every prologue scene now stays visible until the player presses FORTSETT.
 prologueVideo.addEventListener("ended",()=>{
-  if(!prologue.classList.contains("active"))return;
-  const scene=prologueScenes[prologueIndex];
-  if(scene && scene.interactive==="scan") return;
-  if(prologueIndex<prologueScenes.length-1){
-    prologueIndex++;
-    renderPrologue();
-  }
+  if(!prologue.classList.contains("active")) return;
+  try {
+    prologueVideo.pause();
+    // Keep the final frame on screen. No automatic scene advance.
+  } catch(e) {}
 });
 
 
