@@ -2177,3 +2177,105 @@ button:disabled{cursor:default;}
 @media(max-width:600px){
   body:has(#desert.active) .fullscreen-btn{right:16px!important;top:auto!important;bottom:154px!important;font-size:.72rem!important;padding:9px 12px!important}
 }
+
+
+/* =========================================================
+   v5.5.6 – IMMERSIVE TOMB + 4-WAY AURORA + CLEAN DESERT
+   ========================================================= */
+
+/* Fullscreen button must never cover headers. */
+.fullscreen-btn{top:auto!important;bottom:calc(92px + env(safe-area-inset-bottom))!important;right:12px!important;z-index:190!important}
+body:has(#prologue.active) .fullscreen-btn{display:none!important}
+
+/* Remove the old flat 2-D desert primitives completely. */
+#desert{background:#17100a url("desert_environment.jpg?v=5.5.6") center/cover no-repeat!important}
+#desert .desert-sky,#desert .desert-sun,#desert .distant-cliffs,#desert .dunes,#desert .grave-entrance,#desert .camp,#desert .desert-wind{display:none!important}
+#desert::before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.08),transparent 42%,rgba(0,0,0,.28));pointer-events:none}
+
+/* Perspective depth: forward/back changes scale and vertical position. */
+#chamber .chamber-aurora,#desert .desert-aurora{
+  --depth:.56;
+  transform-origin:50% 100%!important;
+  transform:translateY(calc((.62 - var(--depth))*110px)) scale(calc(.72 + var(--depth)*.48))!important;
+  transition:transform .07s linear,filter .12s linear;
+}
+#chamber .chamber-aurora.walk-forward .aurora-character-sprite,
+#desert .desert-aurora.walk-forward .aurora-character-sprite{animation:auroraForward556 .42s ease-in-out infinite alternate!important}
+#chamber .chamber-aurora.walk-back .aurora-character-sprite,
+#desert .desert-aurora.walk-back .aurora-character-sprite{animation:auroraBack556 .42s ease-in-out infinite alternate!important;filter:brightness(.82)}
+@keyframes auroraForward556{from{transform:translateY(0) rotate(-.5deg) scaleX(.985)}to{transform:translateY(-5px) rotate(.5deg) scaleX(1.015)}}
+@keyframes auroraBack556{from{transform:translateY(0) rotate(.5deg) scaleX(1.01)}to{transform:translateY(-4px) rotate(-.5deg) scaleX(.99)}}
+
+/* More natural pickup/inspect poses despite the 2-D sprite limitation. */
+#chamber .chamber-aurora.compass-reach .aurora-character-sprite{animation:pickup556 .75s ease-in-out forwards!important;transform-origin:52% 86%!important}
+@keyframes pickup556{0%{transform:rotate(0) translateY(0)}45%{transform:rotate(7deg) translate(8px,12px) scale(.96)}100%{transform:rotate(2deg) translate(5px,4px)}}
+
+/* Tutankhamun-inspired chamber: compact, crowded, layered, warm and dusty. */
+#chamber{background:#070504!important}
+#chamber .chamber-camera{
+  background:
+    radial-gradient(ellipse at 50% 60%,rgba(218,154,67,.22),transparent 42%),
+    linear-gradient(to bottom,#170e07 0%,#2b190c 42%,#120a05 100%)!important;
+  perspective:900px;
+}
+#chamber .chamber-wall{
+  background:
+    linear-gradient(rgba(29,16,8,.20),rgba(2,1,1,.42)),
+    repeating-linear-gradient(90deg,rgba(180,104,38,.13) 0 2px,transparent 2px 76px),
+    repeating-linear-gradient(0deg,#563019 0 34px,#3f2313 34px 38px)!important;
+  box-shadow:inset 0 0 95px #000,inset 0 20px 60px rgba(0,0,0,.78)!important;
+}
+#chamber .chamber-floor{
+  background:
+    radial-gradient(ellipse at 50% 0,rgba(244,186,85,.23),transparent 62%),
+    repeating-linear-gradient(92deg,#40220f 0 54px,#2f180b 54px 58px)!important;
+}
+#chamber .chamber-column{filter:brightness(.62) saturate(.78)}
+#chamber .anubis{opacity:.48!important;filter:drop-shadow(0 8px 9px #000)}
+#chamber .glyph-band{color:#c89248!important;text-shadow:0 1px 1px #000;opacity:.46!important}
+
+.grave-goods{position:absolute;inset:0;z-index:18;pointer-events:none}
+.funerary-shrine{position:absolute;bottom:20%;width:16%;height:34%;border:4px solid #9d6b31;background:linear-gradient(90deg,#261208,#5e3419 45%,#2b160b);box-shadow:inset 0 0 18px #000,0 12px 18px #0008;color:#b98745;display:grid;place-items:center;font-size:2.3rem}
+.shrine-a{left:2%;transform:perspective(500px) rotateY(10deg)}.shrine-b{right:2%;height:28%;transform:perspective(500px) rotateY(-10deg)}
+.canopic-group{position:absolute;left:18%;bottom:18%;display:flex;gap:5px;align-items:end}.canopic-group i{display:block;width:18px;height:38px;border-radius:8px 8px 5px 5px;background:linear-gradient(90deg,#6d5636,#c3a469,#5b452c);box-shadow:0 6px 8px #0008}.canopic-group i:nth-child(2){height:46px}.canopic-group i:nth-child(3){height:34px}.canopic-group i:nth-child(4){height:42px}
+.sealed-box{position:absolute;bottom:18%;width:62px;height:38px;border:3px solid #76502b;background:linear-gradient(#70401d,#2a160a);box-shadow:0 8px 10px #0009}.box-a{left:28%;transform:rotate(-3deg)}.box-b{right:24%;width:54px;height:34px;transform:rotate(5deg)}
+.funerary-jar{position:absolute;bottom:18%;width:24px;height:48px;border-radius:45% 45% 25% 25%;background:linear-gradient(90deg,#825a32,#d0a56e,#694522);box-shadow:0 6px 9px #0008}.jar-a{left:39%}.jar-b{right:33%;height:39px}.jar-c{right:18%;height:32px;width:20px}
+.ushabti{position:absolute;bottom:20%;color:#9c8054;font-size:2.2rem;filter:drop-shadow(0 4px 5px #000)}.u-a{left:14%}.u-b{right:13%}
+.wall-niche{position:absolute;top:31%;width:54px;height:72px;background:#080504;border:3px inset #52321b;box-shadow:inset 0 0 16px #000,0 0 12px #000;color:#8d6334;display:grid;place-items:center;font-size:2rem}.niche-a{left:8%}.niche-b{right:8%}
+
+/* Hodelykt: a soft moving cone anchored near Aurora. */
+#chamber .headlamp-cone{position:absolute;left:38%;bottom:27%;width:48%;height:34%;z-index:35;pointer-events:none;transform-origin:0 60%;transform:skewX(-12deg);background:linear-gradient(90deg,rgba(255,224,154,.26),rgba(255,199,91,.10) 52%,transparent);clip-path:polygon(0 42%,100% 0,100% 100%,0 58%);filter:blur(2px);mix-blend-mode:screen;animation:lamp556 4.5s ease-in-out infinite alternate}
+@keyframes lamp556{from{opacity:.58;transform:skewX(-12deg) rotate(-2deg)}to{opacity:.82;transform:skewX(-12deg) rotate(3deg)}}
+
+/* Sarcophagus no longer looks like a flat game board. */
+#chamber .sarcophagus{background:linear-gradient(90deg,#3a1d0b,#a76f2d 48%,#38200d)!important;border-color:#b58a47!important;box-shadow:0 20px 32px #000b,inset 0 0 30px #120805!important;border-radius:48% 48% 13% 13%/18% 18% 8% 8%!important}
+#chamber .sarcophagus::before{content:"𓂀  ☥  𓆣";position:absolute;left:10%;right:10%;top:40%;padding:7px 0;border-top:1px solid #bd8b45;border-bottom:1px solid #bd8b45;color:#dfb863;font-size:1.1rem;text-align:center;opacity:.75}
+
+/* Chest behind Aurora; compass above everyone. */
+#chamber .treasure-chest{z-index:32!important;transform:scale(.72)!important;transform-origin:50% 100%!important}
+#chamber .chamber-aurora{z-index:48!important}
+#chamber .compass-artifact{z-index:72!important;width:88px!important;height:88px!important;bottom:39%!important;filter:drop-shadow(0 0 16px #ffc557) drop-shadow(0 0 34px #8f5d15)!important}
+#chamber .symbol-puzzle{z-index:58!important;background:rgba(13,8,4,.88)!important;backdrop-filter:blur(4px)}
+
+/* Five-button controls: four directions + action. */
+.chamber-controls.four-way,.desert-controls.four-way{display:grid!important;grid-template-columns:1fr 1fr 1fr 1fr 1.7fr!important;gap:7px!important}
+.chamber-controls.four-way button,.desert-controls.four-way button{min-width:0!important;padding:0 4px!important}
+
+/* Desert HUD and dialogue remain readable over the photo. */
+#desert .desert-hud,#desert .desert-dialog{background:rgba(8,6,4,.84)!important;backdrop-filter:blur(5px);box-shadow:0 8px 24px #0007}
+#desert .desert-aurora{z-index:30!important}
+#desert .chapter-complete.ending-photo{background:#050403!important}
+#desert .chapter-complete.ending-photo img{object-fit:cover!important;object-position:center!important}
+
+/* Mobile: use space efficiently and keep buttons away from Safari chrome. */
+@media (orientation:portrait) and (max-width:700px){
+  #chamber .chamber-camera{top:calc(176px + env(safe-area-inset-top))!important;bottom:calc(98px + env(safe-area-inset-bottom))!important}
+  #chamber .chamber-controls,#desert .desert-controls{left:8px!important;right:8px!important;bottom:calc(10px + env(safe-area-inset-bottom))!important;height:58px!important}
+  .chamber-controls.four-way button,.desert-controls.four-way button{height:54px!important;font-size:.84rem!important}
+  #chamber .sarcophagus{width:112px!important;height:184px!important;bottom:18%!important}
+  #chamber .treasure-chest{bottom:18%!important}
+  #chamber .symbol-puzzle{top:14%!important;width:min(295px,79%)!important}
+  #desert .desert-hud{top:calc(10px + env(safe-area-inset-top))!important}
+  #desert .desert-dialog{top:calc(92px + env(safe-area-inset-top))!important}
+  #desert .fullscreen-btn{display:none!important}
+}

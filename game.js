@@ -449,15 +449,17 @@ window.addEventListener("keydown",e=>{
   }else if(chamber.classList.contains("active")){
     if(e.key==="ArrowLeft")chamberLeft=true;
     if(e.key==="ArrowRight")chamberRight=true;
-    if((e.key==="e"||e.key==="E") && !e.repeat)$("chamberInspect").click();
+    if(e.key==="ArrowUp")chamberForward=true; if(e.key==="ArrowDown")chamberBack=true; if((e.key==="e"||e.key==="E") && !e.repeat)$("chamberInspect").click();
   }else if(desert.classList.contains("active")){
     if(e.key==="ArrowLeft")desertLeft=true;
     if(e.key==="ArrowRight")desertRight=true;
+    if(e.key==="ArrowUp")desertForward=true; if(e.key==="ArrowDown")desertBack=true;
   }
 });
 window.addEventListener("keyup",e=>{
   if(e.key==="ArrowLeft"){state.left=false;chamberLeft=false;desertLeft=false;}
   if(e.key==="ArrowRight"){state.right=false;chamberRight=false;desertRight=false;}
+  if(e.key==="ArrowUp"){chamberForward=false;desertForward=false;} if(e.key==="ArrowDown"){chamberBack=false;desertBack=false;}
 });
 
 function loop(t){
@@ -505,7 +507,7 @@ function loop(t){
 const chamber=$("chamber"),journal=$("journal"),desert=$("desert"),chamberAurora=$("chamberAurora"),chamberCamera=$("chamberCamera"),innerDoor=$("innerDoor"),cinematicBars=$("cinematicBars"),transitionFade=$("transitionFade"),chamberExitFade=$("chamberExitFade"),inventoryBadge=$("inventoryBadge");
 const chamberText=$("chamberDialogText"),chamberObjective=$("chamberObjective"),chamberProgress=$("chamberProgress");
 const sarcophagus=$("sarcophagus"),symbolPuzzle=$("symbolPuzzle"),treasureChest=$("treasureChest"),compassArtifact=$("compassArtifact");
-let chamberX=7,chamberLeft=false,chamberRight=false,chamberStage=0,glyphs=[],compassCollected=storage.get("aurora_compass_v521")==="yes";
+let chamberX=7,chamberDepth=0.52,chamberLeft=false,chamberRight=false,chamberForward=false,chamberBack=false,chamberStage=0,glyphs=[],compassCollected=storage.get("aurora_compass_v521")==="yes";
 
 function chamberSay(text){chamberText.textContent=text}
 function chamberGoal(text,n){chamberObjective.textContent=text;chamberProgress.textContent=n+" / 3"}
@@ -532,8 +534,9 @@ enterChamberBtn.onclick=()=>{
     chamberCamera.style.filter="";
     chamberCamera.classList.remove("settled");
     chamberCamera.classList.add("entering");
-    chamberX=3;
+    chamberX=3; chamberDepth=.50;
     chamberAurora.style.left=chamberX+"%";
+    chamberAurora.style.setProperty("--depth",chamberDepth);
     chamberAurora.classList.add("walk");
     chamberStage=0;
     glyphs=[];
@@ -574,6 +577,8 @@ function chamberHold(id,key){
 }
 chamberHold("chamberLeft","left");
 chamberHold("chamberRight","right");
+bindHoldButton("chamberForward",()=>chamberForward=true,()=>chamberForward=false);
+bindHoldButton("chamberBack",()=>chamberBack=true,()=>chamberBack=false);
 
 symbolPuzzle.querySelectorAll("button").forEach(button=>{
   button.onclick=()=>{
@@ -620,8 +625,9 @@ $("chamberInspect").onclick=()=>{
     chamberStage=3;
     // v5.5.5: lock Aurora in front of the chest during the compass interaction.
     chamberLeft=false; chamberRight=false; chamberVelocity=0;
-    chamberX=40;
+    chamberX=40; chamberDepth=.64;
     chamberAurora.style.left=chamberX+"%";
+    chamberAurora.style.setProperty("--depth",chamberDepth);
     chamberAurora.classList.remove("walk","face-left","start-step");
     chamberAurora.classList.add("compass-front");
     treasureChest.classList.add("open");
@@ -677,7 +683,7 @@ function chamberLoop(){
   if(chamber.classList.contains("active")){
     if(chamberStage===3 && !compassCollected){
       chamberLeft=false; chamberRight=false; chamberVelocity=0;
-      chamberX=40; chamberAurora.style.left=chamberX+"%";
+      chamberX=40; chamberDepth=.64; chamberAurora.style.left=chamberX+"%"; chamberAurora.style.setProperty("--depth",chamberDepth);
       chamberAurora.classList.remove("walk","face-left","start-step");
       chamberAurora.classList.add("compass-front");
       requestAnimationFrame(chamberLoop); return;
@@ -706,7 +712,11 @@ function chamberLoop(){
 
     chamberX+=chamberVelocity;
     chamberX=Math.max(4,Math.min(83,chamberX));
+    if(chamberForward){chamberDepth=Math.min(.78,chamberDepth+.0045); chamberAurora.classList.add("walk","walk-forward");}
+    else if(chamberBack){chamberDepth=Math.max(.36,chamberDepth-.0045); chamberAurora.classList.add("walk","walk-back");}
+    else{chamberAurora.classList.remove("walk-forward","walk-back");}
     chamberAurora.style.left=chamberX+"%";
+    chamberAurora.style.setProperty("--depth",chamberDepth);
   }
   requestAnimationFrame(chamberLoop);
 }
@@ -715,14 +725,15 @@ requestAnimationFrame(chamberLoop);
 
 /* ---------- ØRKENSCENE 4.8 ---------- */
 const desertAurora=$("desertAurora"),desertText=$("desertDialogText"),chapterComplete=$("chapterComplete");
-let desertX=20,desertLeft=false,desertRight=false,desertVelocity=0,desertStarted=false;
+let desertX=20,desertDepth=.56,desertLeft=false,desertRight=false,desertForward=false,desertBack=false,desertVelocity=0,desertStarted=false;
 
 function desertSay(text){desertText.textContent=text}
 function startDesertScene(){
   show(desert);
   desertStarted=true;
-  desertX=20;
+  desertX=20; desertDepth=.56;
   desertAurora.style.left=desertX+"%";
+  desertAurora.style.setProperty("--depth",desertDepth);
   desertSay("Mykene får vente. Først må funnet dokumenteres ordentlig.");
   setTimeout(()=>{
     chapterComplete.classList.remove("hidden");
@@ -738,6 +749,8 @@ function desertHold(id,key){
 }
 desertHold("desertLeft","left");
 desertHold("desertRight","right");
+bindHoldButton("desertForward",()=>desertForward=true,()=>desertForward=false);
+bindHoldButton("desertBack",()=>desertBack=true,()=>desertBack=false);
 
 $("desertInspect").onclick=()=>{
   desertAurora.classList.add("face-left");
@@ -768,7 +781,11 @@ function desertLoop(){
     }
     desertX+=desertVelocity;
     desertX=Math.max(7,Math.min(82,desertX));
+    if(desertForward){desertDepth=Math.min(.78,desertDepth+.004); desertAurora.classList.add("walk","walk-forward");}
+    else if(desertBack){desertDepth=Math.max(.38,desertDepth-.004); desertAurora.classList.add("walk","walk-back");}
+    else{desertAurora.classList.remove("walk-forward","walk-back");}
     desertAurora.style.left=desertX+"%";
+    desertAurora.style.setProperty("--depth",desertDepth);
 
     if(desertX>70){
       $("desertObjective").textContent="Leiren er nådd";

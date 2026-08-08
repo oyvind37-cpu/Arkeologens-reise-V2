@@ -1,6 +1,6 @@
 {
-  "name": "Arkeologens Reise",
-  "short_name": "Arkeologen",
+  "name": "Arkeologens Reise v5.5.6",
+  "short_name": "Arkeologens Reise",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -1,6 +1,6 @@
 {
-  "name": "Arkeologens Reise",
-  "version": "5.5.5",
+  "name": "Arkeologens Reise v5.5.6",
+  "version": "5.5.6",
   "entry": "index.html",
   "platform": "HTML5 / GitHub Pages",
   "prologue_scenes": 9,
@@ -30,5 +30,6 @@
   "keep_in_github": [
     "mystisk_musikk.mp3"
   ],
-  "notes": "Safari/gravkammer hotfix: kompasset nullstilles for ny reise og vises tydelig over gullkisten. Fullskjermknappen flyttes bort fra HUD-tekst på mobil."
+  "notes": "Tutankhamon-inspirert gravkammer, fotorealistisk ørken, 4-veis dybdebevegelse for Aurora, kompass/kiste-lagdeling og Safari-layout.",
+  "channel": "fix"
 }

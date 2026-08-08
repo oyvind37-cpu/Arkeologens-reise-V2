@@ -14,7 +14,7 @@
   <link rel="manifest" href="manifest.webmanifest?v=5.5.5">
   <link rel="apple-touch-icon" href="icon-180.png">
 
-<link rel="stylesheet" href="style.css?v=5.5.5-final">
+<link rel="stylesheet" href="style.css?v=5.5.6-final">
 </head>
 <body>
 
@@ -83,7 +83,7 @@
 
   <audio id="musicTrack" data-src="mystisk_musikk.mp3" preload="none" loop></audio>
 
-  <section id="game" class="screen"><div class="build-marker">v5.4.0</div>
+  <section id="game" class="screen"><div class="build-marker">v5.5.6</div>
     <div id="world">
       <div class="temple-bg"></div><div class="sunbeam"></div><div class="mist"></div>
       <div class="ground"></div>
@@ -142,6 +142,16 @@
     <div class="anubis anubis-right">𓁢</div>
     <div class="light-shaft"></div>
     <div class="floating-gold"></div>
+    <div class="grave-goods" aria-hidden="true">
+      <div class="funerary-shrine shrine-a"><span>𓂀</span></div>
+      <div class="funerary-shrine shrine-b"><span>☥</span></div>
+      <div class="canopic-group"><i></i><i></i><i></i><i></i></div>
+      <div class="sealed-box box-a"></div><div class="sealed-box box-b"></div>
+      <div class="funerary-jar jar-a"></div><div class="funerary-jar jar-b"></div><div class="funerary-jar jar-c"></div>
+      <div class="ushabti u-a">𓀀</div><div class="ushabti u-b">𓀀</div>
+      <div class="wall-niche niche-a"><span>𓁹</span></div><div class="wall-niche niche-b"><span>𓆣</span></div>
+    </div>
+    <div class="headlamp-cone" aria-hidden="true"></div>
 
     <div id="sarcophagus" class="sarcophagus">
       <div class="sarcophagus-face">𓁹</div>
@@ -187,9 +197,11 @@
       <div><b>AURORA</b><p id="chamberDialogText">Utrolig... veggene er dekket av hieroglyfer.</p></div>
     </div>
 
-    <div class="chamber-controls">
-      <button type="button" id="chamberLeft">◀</button>
-      <button type="button" id="chamberRight">▶</button>
+    <div class="chamber-controls four-way">
+      <button type="button" id="chamberLeft" aria-label="Gå venstre">◀</button>
+      <button type="button" id="chamberForward" aria-label="Gå framover">▲</button>
+      <button type="button" id="chamberBack" aria-label="Gå bakover">▼</button>
+      <button type="button" id="chamberRight" aria-label="Gå høyre">▶</button>
       <button type="button" id="chamberInspect">UNDERSØK</button>
     </div>
   </section>
@@ -229,9 +241,11 @@
       <div><b>AURORA</b><p id="desertDialogText">Mykene får vente. Først må funnet dokumenteres ordentlig.</p></div>
     </div>
 
-    <div class="desert-controls">
-      <button type="button" id="desertLeft">◀</button>
-      <button type="button" id="desertRight">▶</button>
+    <div class="desert-controls four-way">
+      <button type="button" id="desertLeft" aria-label="Gå venstre">◀</button>
+      <button type="button" id="desertForward" aria-label="Gå framover">▲</button>
+      <button type="button" id="desertBack" aria-label="Gå bakover">▼</button>
+      <button type="button" id="desertRight" aria-label="Gå høyre">▶</button>
       <button type="button" id="desertInspect">SE TILBAKE</button>
     </div>
 
@@ -263,6 +277,6 @@
   </section>
 
 </main>
-<script src="game.js?v=5.5.5-final"></script>
+<script src="game.js?v=5.5.6-final"></script>
 </body>
 </html>
