@@ -1696,7 +1696,7 @@ body{
 
 
 /* =========================================================
-   v5.3.9 – MOBILE GAMEPLAY / CHAMBER REPAIR
+   v5.4.0 – MOBILE GAMEPLAY / CHAMBER REPAIR
    Prolog untouched. Scoped to #game and #chamber only.
    ========================================================= */
 
@@ -2054,4 +2054,30 @@ body{
   #chamber .chamber-controls{
     bottom:8px!important;
   }
+}
+
+
+/* =========================================================
+   v5.4.0 – CROSS-BROWSER INPUT / VIEWPORT SAFETY
+   ========================================================= */
+html,body,#app{
+  width:100%;
+  height:100%;
+  min-height:100%;
+}
+@supports (height:100dvh){
+  html,body,#app,.screen{height:100dvh;min-height:100dvh;}
+}
+.controls button,.chamber-controls button,.desert-controls button,
+#startBtn,#prologueBack,#prologueNext,#prologueSkip,#fullscreenBtn,
+#musicIntroBtn,#musicGameBtn,#resetGameBtn,#enterChamberBtn,#chamberInspect,#desertInspect{
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+}
+#left,#right,#chamberLeft,#chamberRight,#desertLeft,#desertRight{touch-action:none;}
+button{cursor:pointer;}
+button:disabled{cursor:default;}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;}
 }

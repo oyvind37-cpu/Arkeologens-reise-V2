@@ -1,7 +1,13 @@
 (() => {
 const $=id=>document.getElementById(id);
 const screens=[...document.querySelectorAll(".screen")];
-const world=$("world"),aurora=$("aurora"),dialogText=$("dialogText");
+
+const storage={
+  get(key){try{return localStorage.getItem(key)}catch(_){return null}},
+  set(key,value){try{localStorage.setItem(key,value)}catch(_){}},
+  remove(key){try{localStorage.removeItem(key)}catch(_){}}
+};
+const game=$("game"),world=$("world"),aurora=$("aurora"),dialogText=$("dialogText");
 const plate=$("pressurePlate"),arrows=$("arrows"),eyeWall=$("eyeWall"),eyeGlow=$("eyeGlow"),wallDust=$("wallDust");
 const door=$("door"),wow=$("wowLight"),nearHint=$("nearHint"),interact=$("interact"),enterChamberBtn=$("enterChamberBtn");
 const state={x:180,left:false,right:false,jumping:false,stage:0,vision:false,camera:0,idle:0,last:0,nearEye:false,eyeOpened:false,floorHintShown:false};
@@ -55,12 +61,25 @@ function startFallbackMusic(){
 
 async function startMusic(){
   if(!musicWanted)return;
+
+  // Start reservemusikken direkte i brukerens klikk. Det gjør lyd robust i
+  // Safari/iOS selv om den valgfrie MP3-filen ikke finnes på serveren.
+  startFallbackMusic();
+  if(fallbackAudio?.ac?.state==="suspended") fallbackAudio.ac.resume();
+
+  const source=musicTrack.dataset.src;
+  if(!source)return;
+
   try{
+    if(!musicTrack.getAttribute("src")) musicTrack.src=source;
     musicTrack.currentTime=0;
     await musicTrack.play();
+    if(fallbackAudio){
+      fallbackAudio.master.gain.setTargetAtTime(0,fallbackAudio.ac.currentTime,.08);
+    }
   }catch(error){
-    console.log("MP3 kunne ikke spilles. Starter reservemusikk.",error);
-    startFallbackMusic();
+    console.log("Valgfri MP3 kunne ikke spilles. Reservemusikk fortsetter.",error);
+    resumeFallback();
   }
 }
 
@@ -92,7 +111,7 @@ function toggleMusic(){
   updateMusicButtons();
 
   if(musicWanted){
-    musicTrack.play().catch(()=>resumeFallback());
+    startMusic();
   }else{
     stopMusic();
   }
@@ -104,7 +123,7 @@ updateMusicButtons();
 
 const resetGameBtn=$("resetGameBtn");
 resetGameBtn.onclick=()=>{
-  localStorage.removeItem("aurora_compass"); localStorage.removeItem("aurora_compass_v521"); localStorage.removeItem("aurora_prologue_seen");
+  storage.remove("aurora_compass"); storage.remove("aurora_compass_v521"); storage.remove("aurora_prologue_seen");
   location.reload();
 };
 
@@ -289,10 +308,23 @@ prologueVideo.addEventListener("ended",()=>{
 });
 
 
+function bindHoldButton(id,onDown,onUp){
+  const b=$(id);
+  if(!b)return;
+  const down=ev=>{ev.preventDefault();onDown();};
+  const up=ev=>{ev.preventDefault();onUp();};
+  if(window.PointerEvent){
+    b.addEventListener("pointerdown",down,{passive:false});
+    ["pointerup","pointercancel","pointerleave"].forEach(type=>b.addEventListener(type,up,{passive:false}));
+  }else{
+    b.addEventListener("touchstart",down,{passive:false});
+    ["touchend","touchcancel"].forEach(type=>b.addEventListener(type,up,{passive:false}));
+    b.addEventListener("mousedown",down);
+    ["mouseup","mouseleave"].forEach(type=>b.addEventListener(type,up));
+  }
+}
 function hold(id,key){
- const b=$(id);
- ["pointerdown","touchstart"].forEach(e=>b.addEventListener(e,ev=>{ev.preventDefault();state[key]=true;state.idle=performance.now()},{passive:false}));
- ["pointerup","pointercancel","pointerleave","touchend"].forEach(e=>b.addEventListener(e,ev=>{ev.preventDefault();state[key]=false},{passive:false}));
+  bindHoldButton(id,()=>{state[key]=true;state.idle=performance.now()},()=>{state[key]=false});
 }
 hold("left","left");hold("right","right");
 
@@ -386,6 +418,38 @@ function updateNearEye(){
  eyeWall.classList.toggle("ready",state.stage===2 && !state.eyeOpened);
 }
 
+function releaseMovement(){
+  state.left=false;state.right=false;
+  chamberLeft=false;chamberRight=false;
+  desertLeft=false;desertRight=false;
+}
+window.addEventListener("blur",releaseMovement);
+document.addEventListener("visibilitychange",()=>{if(document.hidden)releaseMovement()});
+window.addEventListener("pointerup",releaseMovement);
+window.addEventListener("touchend",releaseMovement,{passive:true});
+
+// Desktop keyboard support for Chrome, Edge, Firefox and Safari.
+window.addEventListener("keydown",e=>{
+  if(["ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();
+  if(game.classList.contains("active")){
+    if(e.key==="ArrowLeft")state.left=true;
+    if(e.key==="ArrowRight")state.right=true;
+    if(e.key===" " && !e.repeat)$("jump").click();
+    if((e.key==="e"||e.key==="E") && !e.repeat)$("interact").click();
+  }else if(chamber.classList.contains("active")){
+    if(e.key==="ArrowLeft")chamberLeft=true;
+    if(e.key==="ArrowRight")chamberRight=true;
+    if((e.key==="e"||e.key==="E") && !e.repeat)$("chamberInspect").click();
+  }else if(desert.classList.contains("active")){
+    if(e.key==="ArrowLeft")desertLeft=true;
+    if(e.key==="ArrowRight")desertRight=true;
+  }
+});
+window.addEventListener("keyup",e=>{
+  if(e.key==="ArrowLeft"){state.left=false;chamberLeft=false;desertLeft=false;}
+  if(e.key==="ArrowRight"){state.right=false;chamberRight=false;desertRight=false;}
+});
+
 function loop(t){
  const dt=Math.min((t-state.last)/1000||0,.035);state.last=t;
 
@@ -431,7 +495,7 @@ function loop(t){
 const chamber=$("chamber"),journal=$("journal"),desert=$("desert"),chamberAurora=$("chamberAurora"),chamberCamera=$("chamberCamera"),innerDoor=$("innerDoor"),cinematicBars=$("cinematicBars"),transitionFade=$("transitionFade"),chamberExitFade=$("chamberExitFade"),inventoryBadge=$("inventoryBadge");
 const chamberText=$("chamberDialogText"),chamberObjective=$("chamberObjective"),chamberProgress=$("chamberProgress");
 const sarcophagus=$("sarcophagus"),symbolPuzzle=$("symbolPuzzle"),treasureChest=$("treasureChest"),compassArtifact=$("compassArtifact");
-let chamberX=7,chamberLeft=false,chamberRight=false,chamberStage=0,glyphs=[],compassCollected=localStorage.getItem("aurora_compass_v521")==="yes";
+let chamberX=7,chamberLeft=false,chamberRight=false,chamberStage=0,glyphs=[],compassCollected=storage.get("aurora_compass_v521")==="yes";
 
 function chamberSay(text){chamberText.textContent=text}
 function chamberGoal(text,n){chamberObjective.textContent=text;chamberProgress.textContent=n+" / 3"}
@@ -489,11 +553,10 @@ enterChamberBtn.onclick=()=>{
 };
 
 function chamberHold(id,key){
-  const b=$(id);
-  const down=e=>{e.preventDefault();if(key==="left")chamberLeft=true;else chamberRight=true};
-  const up=e=>{e.preventDefault();if(key==="left")chamberLeft=false;else chamberRight=false};
-  ["pointerdown","touchstart"].forEach(t=>b.addEventListener(t,down,{passive:false}));
-  ["pointerup","pointercancel","pointerleave","touchend"].forEach(t=>b.addEventListener(t,up,{passive:false}));
+  bindHoldButton(id,
+    ()=>{if(key==="left")chamberLeft=true;else chamberRight=true},
+    ()=>{if(key==="left")chamberLeft=false;else chamberRight=false}
+  );
 }
 chamberHold("chamberLeft","left");
 chamberHold("chamberRight","right");
@@ -557,7 +620,7 @@ compassArtifact.onclick=()=>{
 $("closeJournal").onclick=()=>{
   if(!compassCollected){
     compassCollected=true;
-    localStorage.setItem("aurora_compass_v521","yes");
+    storage.set("aurora_compass_v521","yes");
   }
   show(chamber);
   compassArtifact.classList.add("collected");
@@ -638,11 +701,10 @@ function startDesertScene(){
 }
 
 function desertHold(id,key){
-  const b=$(id);
-  const down=e=>{e.preventDefault();if(key==="left")desertLeft=true;else desertRight=true};
-  const up=e=>{e.preventDefault();if(key==="left")desertLeft=false;else desertRight=false};
-  ["pointerdown","touchstart"].forEach(t=>b.addEventListener(t,down,{passive:false}));
-  ["pointerup","pointercancel","pointerleave","touchend"].forEach(t=>b.addEventListener(t,up,{passive:false}));
+  bindHoldButton(id,
+    ()=>{if(key==="left")desertLeft=true;else desertRight=true},
+    ()=>{if(key==="left")desertLeft=false;else desertRight=false}
+  );
 }
 desertHold("desertLeft","left");
 desertHold("desertRight","right");
@@ -702,16 +764,17 @@ function syncFullscreenButton(){
 }
 async function enterGameFullscreen(){
   const root=document.documentElement;
-  try{
-    if(root.requestFullscreen){
+  if(root.requestFullscreen){
+    try{
       await root.requestFullscreen({navigationUI:"hide"});
       return;
+    }catch(_){
+      try{await root.requestFullscreen();return;}catch(__){}
     }
-    if(root.webkitRequestFullscreen){
-      root.webkitRequestFullscreen();
-      return;
-    }
-  }catch(e){}
+  }
+  if(root.webkitRequestFullscreen){
+    try{root.webkitRequestFullscreen();return;}catch(_){}
+  }
   // iPhone Safari may not expose document fullscreen for general elements.
   if(!isStandalone() && fullscreenHelp){
     fullscreenHelp.hidden=false;
@@ -720,4 +783,5 @@ async function enterGameFullscreen(){
 fullscreenBtn?.addEventListener("click", enterGameFullscreen);
 fullscreenHelpClose?.addEventListener("click",()=>fullscreenHelp.hidden=true);
 document.addEventListener("fullscreenchange",syncFullscreenButton);
+document.addEventListener("webkitfullscreenchange",syncFullscreenButton);
 window.addEventListener("load",syncFullscreenButton);

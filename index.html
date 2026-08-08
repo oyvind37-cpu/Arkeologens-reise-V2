@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="theme-color" content="#0b0704">
-<title>Arkeologens Reise 5.3.9</title>
+<title>Arkeologens Reise 5.4.0</title>
 
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#050403">
@@ -11,10 +11,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Arkeologens Reise">
-  <link rel="manifest" href="manifest.webmanifest?v=5.3.9">
+  <link rel="manifest" href="manifest.webmanifest?v=5.4.0">
   <link rel="apple-touch-icon" href="icon-180.png">
 
-<link rel="stylesheet" href="style.css?v=5.3.9">
+<link rel="stylesheet" href="style.css?v=5.4.0">
 </head>
 <body>
 
@@ -32,7 +32,7 @@
 <main id="app">
   <section id="intro" class="screen active">
     <div class="intro-bg"></div><div class="shade intro-shade"></div><div class="dust"></div>
-    <button id="musicIntroBtn" class="music-intro" aria-label="Slå musikk av eller på">♫ MUSIKK PÅ</button>
+    <button type="button" id="musicIntroBtn" class="music-intro" aria-label="Slå musikk av eller på">♫ MUSIKK PÅ</button>
     <div class="correct-title">
       <h1>ARKEOLOGENS REISE</h1>
       <p>Professor Aurora Vale og det tapte kompasset</p>
@@ -41,12 +41,12 @@
       <div class="portrait"></div>
       <p>«Historien belønner tålmodighet. Se én gang til.»</p>
     </div>
-    <button id="startBtn">START REISEN</button>
+    <button type="button" id="startBtn">START REISEN</button>
   </section>
 
 
   <section id="prologue" class="screen prologue-screen" aria-label="Auroras historie">
-    <button id="prologueSkip" class="prologue-skip">HOPP OVER</button>
+    <button type="button" id="prologueSkip" class="prologue-skip">HOPP OVER</button>
     <div class="prologue-counter"><span id="prologueStep">1</span> / 7</div>
 
     <div class="prologue-stage">
@@ -76,14 +76,14 @@
     </div>
 
     <div class="prologue-controls">
-      <button id="prologueBack" aria-label="Forrige scene">‹</button>
-      <button id="prologueNext" class="primary">FORTSETT</button>
+      <button type="button" id="prologueBack" aria-label="Forrige scene">‹</button>
+      <button type="button" id="prologueNext" class="primary">FORTSETT</button>
     </div>
   </section>
 
-  <audio id="musicTrack" src="mystisk_musikk.mp3" preload="auto" loop></audio>
+  <audio id="musicTrack" data-src="mystisk_musikk.mp3" preload="none" loop></audio>
 
-  <section id="game" class="screen"><div class="build-marker">v5.3.9</div>
+  <section id="game" class="screen"><div class="build-marker">v5.4.0</div>
     <div id="world">
       <div class="temple-bg"></div><div class="sunbeam"></div><div class="mist"></div>
       <div class="ground"></div>
@@ -101,34 +101,24 @@
 
       <div id="door" class="door"><span>𓂀</span></div>
       <div id="wowLight" class="wow-light"></div>
-
-      <div id="aurora" class="aurora"><div class="shadow"></div>
-        <div class="body human-rig"><div class="aurora-character-sprite"></div></div></div>
-          <div class="neck"></div>
-          <div class="shoulders"></div>
-          <div class="field-jacket"></div>
-          <div class="waist-belt"><i></i></div>
-          <div class="hips"></div>
-          <div class="backpack"></div>
-          <div class="upper-arm arm-left"><span class="forearm"></span><span class="hand"></span></div>
-          <div class="upper-arm arm-right"><span class="forearm"></span><span class="hand"></span></div>
-          <div class="thigh thigh-left"><span class="shin"></span><span class="boot"></span></div>
-          <div class="thigh thigh-right"><span class="shin"></span><span class="boot"></span></div>
-          <div class="scarf-tail"></div>
-          <div class="hand-note">📓</div>
-        </div></div>
+      <div id="aurora" class="aurora">
+        <div class="shadow"></div>
+        <div class="body human-rig">
+          <div class="aurora-character-sprite"></div>
+        </div>
+      </div>
     </div>
 
-    <button id="musicGameBtn" class="music-game" aria-label="Slå musikk av eller på">♫</button><button id="resetGameBtn" class="reset-game" aria-label="Start kapitlet på nytt">↺</button><div class="hud"><div><b>EGYPT</b><small>Kongenes dal</small></div><div><b id="objective">Finn inngangen</b><small id="progress">1 / 4</small></div></div>
+    <button type="button" id="musicGameBtn" class="music-game" aria-label="Slå musikk av eller på">♫</button><button type="button" id="resetGameBtn" class="reset-game" aria-label="Start kapitlet på nytt">↺</button><div class="hud"><div><b>EGYPT</b><small>Kongenes dal</small></div><div><b id="objective">Finn inngangen</b><small id="progress">1 / 4</small></div></div>
     <div id="dialog" class="dialog"><div class="dialog-face"></div><div><b>AURORA</b><p id="dialogText">Vi tar det rolig. Gå mot høyre og se etter noe uvanlig.</p></div></div>
 
     <div id="nearHint" class="near-hint hidden">UNDERSØK HORUS-ØYET</div>
     <div id="inventoryBadge" class="inventory-badge hidden">✓ DET TAPTE KOMPASSET</div>
-    <button id="enterChamberBtn" class="enter-chamber hidden">GÅ INN I SKATTEKAMMERET</button>
+    <button type="button" id="enterChamberBtn" class="enter-chamber hidden">GÅ INN I SKATTEKAMMERET</button>
 
     <div class="controls">
-      <div><button id="left">◀</button><button id="right">▶</button></div>
-      <div><button id="vision">BLIKK</button><button id="jump">HOPP</button><button id="interact" class="primary">UNDERSØK</button></div>
+      <div><button type="button" id="left">◀</button><button type="button" id="right">▶</button></div>
+      <div><button type="button" id="vision">BLIKK</button><button type="button" id="jump">HOPP</button><button type="button" id="interact" class="primary">UNDERSØK</button></div>
     </div>
   </section>
 
@@ -161,9 +151,9 @@
       <h3>VOKTERNES REKKEFØLGE</h3>
       <p>Hieroglyfene viser veien</p>
       <div>
-        <button data-glyph="sun">☀</button>
-        <button data-glyph="eye">𓂀</button>
-        <button data-glyph="ankh">☥</button>
+        <button type="button" data-glyph="sun">☀</button>
+        <button type="button" data-glyph="eye">𓂀</button>
+        <button type="button" data-glyph="ankh">☥</button>
       </div>
     </div>
 
@@ -173,23 +163,13 @@
       <div class="treasure-box"></div>
     </div>
 
-    <button id="compassArtifact" class="compass-artifact" aria-label="Ta opp det tapte kompasset"></button>
-
-    <div id="chamberAurora" class="chamber-aurora"><div class="chamber-shadow"></div>
-        <div class="chamber-body human-rig"><div class="aurora-character-sprite"></div></div></div>
-          <div class="neck"></div>
-          <div class="shoulders"></div>
-          <div class="field-jacket"></div>
-          <div class="waist-belt"><i></i></div>
-          <div class="hips"></div>
-          <div class="backpack"></div>
-          <div class="upper-arm arm-left"><span class="forearm"></span><span class="hand"></span></div>
-          <div class="upper-arm arm-right"><span class="forearm"></span><span class="hand"></span></div>
-          <div class="thigh thigh-left"><span class="shin"></span><span class="boot"></span></div>
-          <div class="thigh thigh-right"><span class="shin"></span><span class="boot"></span></div>
-          <div class="scarf-tail"></div>
-          <div class="hand-note">📓</div>
-        </div></div>
+    <button type="button" id="compassArtifact" class="compass-artifact" aria-label="Ta opp det tapte kompasset"></button>
+    <div id="chamberAurora" class="chamber-aurora">
+      <div class="chamber-shadow"></div>
+      <div class="chamber-body human-rig">
+        <div class="aurora-character-sprite"></div>
+      </div>
+    </div>
 
     </div>
     <div id="chamberExitFade" class="chamber-exit-fade"></div>
@@ -208,9 +188,9 @@
     </div>
 
     <div class="chamber-controls">
-      <button id="chamberLeft">◀</button>
-      <button id="chamberRight">▶</button>
-      <button id="chamberInspect">UNDERSØK</button>
+      <button type="button" id="chamberLeft">◀</button>
+      <button type="button" id="chamberRight">▶</button>
+      <button type="button" id="chamberInspect">UNDERSØK</button>
     </div>
   </section>
 
@@ -232,22 +212,12 @@
       <div class="camp-light"></div>
     </div>
     <div class="desert-wind"></div>
-
-    <div id="desertAurora" class="desert-aurora"><div class="desert-shadow"></div>
-        <div class="desert-body human-rig"><div class="aurora-character-sprite"></div></div></div>
-          <div class="neck"></div>
-          <div class="shoulders"></div>
-          <div class="field-jacket"></div>
-          <div class="waist-belt"><i></i></div>
-          <div class="hips"></div>
-          <div class="backpack"></div>
-          <div class="upper-arm arm-left"><span class="forearm"></span><span class="hand"></span></div>
-          <div class="upper-arm arm-right"><span class="forearm"></span><span class="hand"></span></div>
-          <div class="thigh thigh-left"><span class="shin"></span><span class="boot"></span></div>
-          <div class="thigh thigh-right"><span class="shin"></span><span class="boot"></span></div>
-          <div class="scarf-tail"></div>
-          <div class="hand-note">📓</div>
-        </div></div>
+    <div id="desertAurora" class="desert-aurora">
+      <div class="desert-shadow"></div>
+      <div class="desert-body human-rig">
+        <div class="aurora-character-sprite"></div>
+      </div>
+    </div>
 
     <div class="desert-hud">
       <div><b>KONGENES DAL</b><small>Utenfor den glemte graven</small></div>
@@ -260,9 +230,9 @@
     </div>
 
     <div class="desert-controls">
-      <button id="desertLeft">◀</button>
-      <button id="desertRight">▶</button>
-      <button id="desertInspect">SE TILBAKE</button>
+      <button type="button" id="desertLeft">◀</button>
+      <button type="button" id="desertRight">▶</button>
+      <button type="button" id="desertInspect">SE TILBAKE</button>
     </div>
 
     <div id="chapterComplete" class="chapter-complete hidden">
@@ -289,28 +259,12 @@
           «Et kompass, men nålen peker ikke mot nord. Symbolene antyder en forbindelse til Mykene.
           Dette er ikke slutten på funnet – det er begynnelsen på reisen.»
         </blockquote>
-        <button id="closeJournal">LUKK FELTDAGBOKEN</button>
+        <button type="button" id="closeJournal">LUKK FELTDAGBOKEN</button>
       </div>
     </div>
   </section>
 
 </main>
-<script src="game.js?v=5.3.9"></script>
-<script>
-(function(){
-  const start=document.getElementById("startBtn");
-  const intro=document.getElementById("intro");
-  const game=document.getElementById("game");
-  if(!start||!intro||!game)return;
-  start.addEventListener("click",function(){
-    setTimeout(function(){
-      if(intro.classList.contains("active")){
-        intro.classList.remove("active");
-        game.classList.add("active");
-      }
-    },120);
-  });
-})();
-</script>
+<script src="game.js?v=5.4.0"></script>
 </body>
 </html>
