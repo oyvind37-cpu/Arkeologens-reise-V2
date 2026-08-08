@@ -136,6 +136,11 @@ const prologueKicker=$("prologueKicker");
 const prologueTitle=$("prologueTitle");
 const prologueText=$("prologueText");
 const prologueStep=$("prologueStep");
+const prologueTotal=$("prologueTotal");
+const prologueFade=$("prologueFade");
+const storyOverlay=$("storyOverlay");
+const threatLetter=$("threatLetter");
+const watcherReveal=$("watcherReveal");
 const prologueBack=$("prologueBack");
 const prologueNext=$("prologueNext");
 const prologueSkip=$("prologueSkip");
@@ -172,54 +177,94 @@ const prologueScenes=[
     text:"I esken ligger to gamle ruller, begge bundet med bånd og preget med seglet til en ukjent farao. Seglene er intakte – og ingen ønsker å bryte dem."
   },
   {
+    kicker:"OSLO · KVELDEN FØR AVREISE",
+    title:"Et brev uten avsender",
+    video:"prologue_01_clean.mp4",
+    overlay:"letter",
+    text:"En konvolutt ligger innenfor døren. Ingen frimerker. Ingen avsender. Aurora leser advarselen, fotograferer det ukjente merket og legger brevet i feltdagboken. «Noen har levert dette personlig.»"
+  },
+  {
+    kicker:"NOEN FØLGER MED",
+    title:"En skikkelse i skyggene",
+    video:"prologue_02_clean.mp4",
+    overlay:"watcher",
+    text:"Neste morgen forlater Aurora Oslo. På avstand følger en ukjent mann henne med blikket. Ansiktet er skjult. Han tar opp telefonen og sier bare to ord: «Hun dro.»"
+  },
+  {
     kicker:"DET EGYPTISKE MUSEUM · KAIRO",
     title:"Undersøk de forseglede rullene",
     video:"prologue_05_v537.mp4",
     interactive:"scan",
-    text:"Den nye skanneren kan lese lagene i rullen uten å bryte seglet. Start analysen og se om tegnene fortsatt kan gjenfinnes."
+    text:"I Kairo venter den nye skanneren. Den kan lese lagene i rullen uten å bryte seglet. Start analysen og se om tegnene fortsatt kan gjenfinnes."
   },
   {
     kicker:"KOORDINATENE",
     title:"Analysen gir et resultat",
     video:"prologue_06_v538.mp4",
-    text:"Blant tegnene dukker det opp lengde- og breddegrader. De peker mot et punkt langt ute i ørkenen, utenfor de kjente funnstedene. Aurora bestemmer seg for å undersøke stedet."
+    text:"Blant tegnene dukker det opp lengde- og breddegrader. De peker mot et punkt langt ute i ørkenen, utenfor de kjente funnstedene. Aurora bestemmer seg for å undersøke stedet – og sier ingenting om brevet."
   },
   {
     kicker:"UT I ØRKENEN",
     title:"Reisen begynner",
     video:"prologue_07_cinema.mp4",
-    text:"Museet skaffer en erfaren kamelfører de stoler på. Sammen forlater Aurora Kairo og setter kurs mot et ukjent punkt i ørkenen."
+    text:"Museet skaffer en erfaren kamelfører de stoler på. Sammen forlater Aurora Kairo og setter kurs mot det ukjente punktet. Langt bak dem starter en annen reisende samme vei."
   }
 ];
 let prologueIndex=0;
 
-function renderPrologue(){
-  const scene=prologueScenes[prologueIndex];
-  prologueKicker.textContent=scene.kicker;
-  prologueTitle.textContent=scene.title;
-  prologueText.textContent=scene.text;
-  prologueStep.textContent=String(prologueIndex+1);
-  prologueBack.disabled=prologueIndex===0;
+function setStoryOverlay(type){
+  if(!storyOverlay)return;
+  storyOverlay.classList.remove("active","show-letter","show-watcher");
+  storyOverlay.setAttribute("aria-hidden","true");
+  if(!type)return;
+  storyOverlay.setAttribute("aria-hidden","false");
+  storyOverlay.classList.add("active", type==="letter"?"show-letter":"show-watcher");
+}
 
-  scanRunning=false;
-  scanComplete=false;
-  if(scanOverlay){
-    scanOverlay.classList.remove("active","complete");
-    scanOverlay.setAttribute("aria-hidden","true");
-  }
-  if(scanStatus) scanStatus.textContent="SKANNER LAGENE …";
-
-  if(scene.interactive==="scan"){
-    prologueNext.textContent="START SKANNING";
-  }else{
-    prologueNext.textContent=prologueIndex===prologueScenes.length-1?"REIS TIL EGYPT":"FORTSETT";
-  }
-
+function playCurrentPrologueVideo(scene){
   prologueVideo.pause();
   prologueVideo.src=scene.video;
   prologueVideo.currentTime=0;
   const p=prologueVideo.play();
   if(p && p.catch) p.catch(()=>{});
+}
+
+function renderPrologue({transition=true}={}){
+  const scene=prologueScenes[prologueIndex];
+  const applyScene=()=>{
+    prologueKicker.textContent=scene.kicker;
+    prologueTitle.textContent=scene.title;
+    prologueText.textContent=scene.text;
+    prologueStep.textContent=String(prologueIndex+1);
+    if(prologueTotal) prologueTotal.textContent=String(prologueScenes.length);
+    prologueBack.disabled=prologueIndex===0;
+
+    scanRunning=false;
+    scanComplete=false;
+    if(scanOverlay){
+      scanOverlay.classList.remove("active","complete");
+      scanOverlay.setAttribute("aria-hidden","true");
+    }
+    if(scanStatus) scanStatus.textContent="SKANNER LAGENE …";
+    setStoryOverlay(scene.overlay || null);
+
+    if(scene.interactive==="scan"){
+      prologueNext.textContent="START SKANNING";
+    }else{
+      prologueNext.textContent=prologueIndex===prologueScenes.length-1?"REIS TIL EGYPT":"FORTSETT";
+    }
+    playCurrentPrologueVideo(scene);
+  };
+
+  if(!transition || !prologueFade){
+    applyScene();
+    return;
+  }
+  prologueFade.classList.add("active");
+  setTimeout(()=>{
+    applyScene();
+    requestAnimationFrame(()=>setTimeout(()=>prologueFade.classList.remove("active"),80));
+  },360);
 }
 
 function beginEgypt(){
@@ -237,7 +282,7 @@ function openPrologue(){
   if(fullscreenBtn) fullscreenBtn.style.display="none";
   show(prologue);
   prologueIndex=0;
-  renderPrologue();
+  renderPrologue({transition:false});
   startMusic().catch(error=>console.log("Musikken kunne ikke starte, men introen fortsetter.",error));
 }
 

@@ -1,19 +1,13 @@
 {
-  "name": "Arkeologens Reise",
-  "version": "5.4.0",
-  "entry": "index.html",
-  "platform": "HTML5 / GitHub Pages",
-  "files": [
-    "aurora_face.jpg",
-    "aurora_character_v521.png",
-    "game.js",
-    "index.html",
-    "intro.png",
-    "style.css",
-    "temple.jpg"
-  ],
-  "optional_files": [
-    "mystisk_musikk.mp3"
-  ],
-  "notes": "Cross-browser stability release. Removes the emergency start script that bypassed the prologue, repairs malformed Aurora DOM in Egypt/chamber/desert, uses single-path pointer/touch/mouse hold controls, adds keyboard controls, protects localStorage access, retries standards fullscreen without options, and keeps iPhone standalone guidance. Music falls back to Web Audio if mystisk_musikk.mp3 is not present."
+  "version": "5.5.0",
+  "base_version": "5.4.0",
+  "date": "2026-08-08",
+  "title": "Trusselbrevet og Herr X",
+  "notes": [
+    "Prolog utvidet fra 7 til 9 scener",
+    "Mykere fade-overganger",
+    "Anonymt trusselbrev før avreise",
+    "Første glimt av den ukjente Herr X",
+    "Stabilt v5.4.0-gameplay beholdt"
+  ]
 }

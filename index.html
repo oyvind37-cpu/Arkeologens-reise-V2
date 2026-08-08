@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="theme-color" content="#0b0704">
-<title>Arkeologens Reise 5.4.0</title>
+<title>Arkeologens Reise 5.5.0</title>
 
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#050403">
@@ -11,10 +11,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Arkeologens Reise">
-  <link rel="manifest" href="manifest.webmanifest?v=5.4.0">
+  <link rel="manifest" href="manifest.webmanifest?v=5.5.0">
   <link rel="apple-touch-icon" href="icon-180.png">
 
-<link rel="stylesheet" href="style.css?v=5.4.0">
+<link rel="stylesheet" href="style.css?v=5.5.0">
 </head>
 <body>
 
@@ -47,11 +47,31 @@
 
   <section id="prologue" class="screen prologue-screen" aria-label="Auroras historie">
     <button type="button" id="prologueSkip" class="prologue-skip">HOPP OVER</button>
-    <div class="prologue-counter"><span id="prologueStep">1</span> / 7</div>
+    <div class="prologue-counter"><span id="prologueStep">1</span> / <span id="prologueTotal">9</span></div>
 
     <div class="prologue-stage">
       <video id="prologueVideo" class="prologue-video" muted playsinline preload="auto"></video>
       <div class="prologue-vignette"></div>
+      <div id="prologueFade" class="prologue-fade" aria-hidden="true"></div>
+
+      <div id="storyOverlay" class="story-overlay" aria-hidden="true">
+        <div id="threatLetter" class="threat-letter">
+          <div class="letter-paper">
+            <div class="letter-mark">✦</div>
+            <p>HOLD DEG UNNA KONGENES DAL.</p>
+            <p>Noen graver bør forbli uåpnet.</p>
+            <p class="letter-warning">Dette er din eneste advarsel.</p>
+            <div class="letter-sign">X</div>
+          </div>
+        </div>
+        <div id="watcherReveal" class="watcher-reveal">
+          <div class="watcher-silhouette" aria-hidden="true">
+            <span class="watcher-head"></span>
+            <span class="watcher-body"></span>
+          </div>
+          <div class="watcher-phone">«Hun dro.»</div>
+        </div>
+      </div>
 
       <div id="scanOverlay" class="scan-overlay" aria-hidden="true">
         <div class="scan-grid"></div>
@@ -83,7 +103,7 @@
 
   <audio id="musicTrack" data-src="mystisk_musikk.mp3" preload="none" loop></audio>
 
-  <section id="game" class="screen"><div class="build-marker">v5.4.0</div>
+  <section id="game" class="screen"><div class="build-marker">v5.5.0</div>
     <div id="world">
       <div class="temple-bg"></div><div class="sunbeam"></div><div class="mist"></div>
       <div class="ground"></div>
@@ -265,6 +285,6 @@
   </section>
 
 </main>
-<script src="game.js?v=5.4.0"></script>
+<script src="game.js?v=5.5.0"></script>
 </body>
 </html>
