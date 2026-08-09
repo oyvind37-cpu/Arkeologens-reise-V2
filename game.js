@@ -298,7 +298,6 @@ function openPrologue(){
   startMusic().catch(error=>console.log("Musikken kunne ikke starte, men introen fortsetter.",error));
 }
 
-if(fullscreenBtn) fullscreenBtn.style.display="none";
 startBtn.addEventListener("click",openPrologue);
 
 prologueNext.onclick=()=>{
@@ -857,13 +856,6 @@ function startDesertScene(){
   desertX=20;
   desertAurora.style.left=desertX+"%";
   desertSay("Mykene får vente. Først må funnet dokumenteres ordentlig.");
-  setTimeout(()=>{
-    if(desert.classList.contains("ending-mode")) return;
-    chapterComplete.classList.remove("hidden");
-    setTimeout(()=>{
-      if(!chapterComplete.classList.contains("ending-photo")) chapterComplete.classList.add("hidden");
-    },3200);
-  },900);
 }
 
 function desertHold(id,key){
@@ -887,6 +879,14 @@ $("desertInspect").onclick=()=>{
     if(fullscreenBtn) fullscreenBtn.style.display="none";
   },900);
 };
+
+const endingClose=$("endingClose");
+endingClose?.addEventListener("click",()=>{
+  chapterComplete.classList.add("hidden");
+  chapterComplete.classList.remove("ending-photo");
+  desert.classList.remove("ending-mode");
+  desertSay("Funnet er sikret. Jeg tar en siste kontroll før jeg vender tilbake til leiren.");
+});
 
 function desertLoop(){
   if(desert.classList.contains("active")){

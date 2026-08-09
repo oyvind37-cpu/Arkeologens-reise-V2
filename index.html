@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="theme-color" content="#0b0704">
-<title>Arkeologens Reise 5.6.5 – Safari polish / ending-fix</title>
+<title>Arkeologens Reise 5.6.6 – clean visual fix</title>
 
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#050403">
@@ -11,24 +11,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Arkeologens Reise">
-  <link rel="manifest" href="manifest.webmanifest?v=5.6.5">
+  <link rel="manifest" href="manifest.webmanifest?v=5.6.6">
   <link rel="apple-touch-icon" href="icon-180.png">
 
-<link rel="stylesheet" href="style.css?v=5.6.5">
+<link rel="stylesheet" href="style.css?v=5.6.6">
 </head>
 <body>
-
-  <button id="fullscreenBtn" class="fullscreen-btn" type="button" aria-label="Fullskjerm">
-    ⛶ FULLSKJERM
-  </button>
-  <div id="fullscreenHelp" class="fullscreen-help" hidden>
-    <div class="fullscreen-help-card">
-      <strong>Fullskjerm på iPhone</strong>
-      <p>Trykk Del i Safari → <b>Legg til på Hjem-skjerm</b>. Start deretter spillet fra ikonet. Da åpnes det uten Safari-linjene.</p>
-      <button id="fullscreenHelpClose" type="button">OK</button>
-    </div>
-  </div>
-
 <main id="app">
   <section id="intro" class="screen active">
     <div class="intro-bg"></div><div class="shade intro-shade"></div><div class="dust"></div>
@@ -264,7 +252,13 @@
     </div>
 
     <div id="chapterComplete" class="chapter-complete hidden" aria-label="Kapittel 1 fullført">
-      <img src="chapter1_ending.png" alt="Aurora utenfor den glemte graven i Kongenes dal ved solnedgang">
+      <div class="ending-aurora" aria-hidden="true"></div>
+      <div class="ending-card">
+        <small>KAPITTEL 1 FULLFØRT</small>
+        <h2>Funnet er dokumentert</h2>
+        <p>Aurora forlater den glemte graven med kompasset sikret for videre undersøkelser.</p>
+        <button type="button" id="endingClose">TILBAKE TIL ØRKENEN</button>
+      </div>
     </div>
   </section>
 
@@ -291,6 +285,6 @@
   </section>
 
 </main>
-<script src="game.js?v=5.6.5"></script>
+<script src="game.js?v=5.6.6"></script>
 </body>
 </html>

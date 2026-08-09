@@ -2669,87 +2669,136 @@ button:disabled{cursor:default;}
 
 
 /* =========================================================
-   v5.6.5 – SAFARI polish / clean ending screen
+   v5.6.6 – CLEAN VISUAL FIX
+   Removes placeholder-looking layers and screenshot overlays.
    ========================================================= */
 
-/* The fullscreen helper should not sit on top of the start screen. */
-body:has(#intro.active) .fullscreen-btn{display:none!important;}
+/* Fullscreen helper is intentionally removed from the page. */
+.fullscreen-btn,.fullscreen-help{display:none!important;}
 
-/* When the final photo is shown, it must own the whole screen. */
+/* The exploration screen must never use the title/menu artwork as scenery. */
+#game .temple-bg{
+  background-image:url("gravkammer_v562.png?v=5.6.6")!important;
+  background-repeat:repeat-x!important;
+  background-size:auto 100%!important;
+  background-position:left center!important;
+  filter:brightness(.47) saturate(.72) contrast(1.08)!important;
+}
+#game .ground{
+  height:27%!important;
+  background:linear-gradient(to bottom,rgba(79,57,34,.55),rgba(24,16,10,.92))!important;
+  border-top:1px solid rgba(177,132,73,.42)!important;
+}
+#game .pillar{
+  border:0!important;
+  width:92px!important;
+  background:
+    linear-gradient(90deg,rgba(31,21,13,.92),rgba(116,81,46,.62) 42%,rgba(36,24,14,.92)),
+    repeating-linear-gradient(0deg,transparent 0 24px,rgba(197,151,83,.13) 25px 27px)!important;
+  box-shadow:inset 0 0 0 2px rgba(144,102,57,.28),0 12px 24px rgba(0,0,0,.45)!important;
+  opacity:.78!important;
+}
+
+/* The photorealistic desert background already contains landscape detail.
+   Remove all old CSS placeholder geometry (door, tents, triangles, lamp). */
+#desert .grave-entrance,
+#desert .camp,
+#desert .desert-wind,
+#desert .desert-sky,
+#desert .desert-sun,
+#desert .distant-cliffs,
+#desert .dunes{display:none!important;}
+
+/* Keep Aurora naturally grounded in the real background. */
+#desert .desert-aurora{
+  bottom:20.5%!important;
+  filter:drop-shadow(0 10px 8px rgba(0,0,0,.46));
+}
+
+/* Ending: one scene only. No embedded screenshot, no second background layer. */
 #desert.ending-mode > :not(#chapterComplete){
-  opacity:0!important;
   visibility:hidden!important;
+  opacity:0!important;
   pointer-events:none!important;
 }
 #desert.ending-mode #chapterComplete{
-  display:flex!important;
-  opacity:1!important;
   visibility:visible!important;
+  opacity:1!important;
   pointer-events:auto!important;
 }
-.chapter-complete.ending-photo{
-  left:0!important;
-  right:0!important;
-  top:0!important;
-  bottom:0!important;
+#chapterComplete.chapter-complete.ending-photo{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:250!important;
   width:100%!important;
   height:100%!important;
   max-height:none!important;
-  min-height:100%!important;
   padding:0!important;
   margin:0!important;
   border:0!important;
   border-radius:0!important;
   box-shadow:none!important;
-  background:#050302!important;
   overflow:hidden!important;
+  background:
+    linear-gradient(to bottom,rgba(10,6,3,.10),rgba(10,6,3,.12) 55%,rgba(5,3,2,.72) 100%),
+    url("desert_environment.jpg?v=5.6.6") center 55%/cover no-repeat!important;
 }
-.chapter-complete.ending-photo img{
-  width:100%!important;
-  height:100%!important;
-  max-height:none!important;
-  object-fit:cover!important;
-  object-position:center center!important;
-  display:block!important;
+#chapterComplete .ending-aurora{
+  position:absolute;
+  left:8%;
+  bottom:15%;
+  width:min(31vw,190px);
+  height:min(55vh,440px);
+  background:url("aurora_character_v521.png?v=5.6.6") left bottom/contain no-repeat;
+  filter:drop-shadow(0 12px 10px rgba(0,0,0,.55));
+}
+#chapterComplete .ending-card{
+  position:absolute;
+  z-index:2;
+  left:6%;
+  right:6%;
+  bottom:calc(4.5% + env(safe-area-inset-bottom));
+  padding:16px 18px;
+  border:1px solid rgba(205,153,75,.84);
+  border-radius:18px;
+  background:rgba(8,5,3,.86);
+  backdrop-filter:blur(8px);
+  text-align:left;
+  box-shadow:0 14px 40px rgba(0,0,0,.38);
+}
+#chapterComplete .ending-card small{
+  display:block;
+  color:#e4b55f;
+  font-weight:900;
+  letter-spacing:.12em;
+  margin-bottom:5px;
+}
+#chapterComplete .ending-card h2{
+  margin:0 0 6px!important;
+  color:#f1d18f!important;
+  font:900 clamp(1.25rem,6vw,1.65rem) Georgia,serif!important;
+}
+#chapterComplete .ending-card p{
+  margin:0 0 12px;
+  color:#f1dfbf;
+  line-height:1.35;
+  font-size:clamp(.86rem,3.6vw,1rem);
+}
+#chapterComplete #endingClose{
+  width:100%;
+  min-height:48px;
+  border:1px solid #c8974d;
+  border-radius:14px;
+  background:linear-gradient(#658d38,#3e6226);
+  color:white;
+  font-weight:900;
 }
 
-/* Replace the flat mini-pyramids with low sand/stone mounds. */
-.camp{
-  position:absolute;
-  right:7%;
-  bottom:22%;
-  width:240px;
-  height:118px;
-}
-.tent{
-  position:absolute;
-  bottom:0;
-  width:92px;
-  height:34px;
-  clip-path:polygon(0 100%,8% 65%,22% 52%,36% 58%,50% 38%,67% 54%,80% 48%,92% 70%,100% 100%);
-  border-radius:18px 18px 10px 10px;
-  background:linear-gradient(180deg,#b7925e 0%,#9a7446 52%,#6f5436 100%);
-  filter:drop-shadow(0 8px 8px rgba(0,0,0,.32));
-  opacity:.92;
-}
-.tent-a{left:8px;transform:scale(1.02,.96)}
-.tent-b{left:88px;transform:scale(.86,.9)}
-.jeep{
-  position:absolute;
-  right:2px;
-  bottom:5px;
-  color:#4a3a2a;
-  font-size:2.1rem;
-  transform:scaleX(1.2);
-  opacity:.82;
-}
-.camp-light{
-  position:absolute;
-  left:104px;
-  bottom:16px;
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  background:#f0c36a;
-  box-shadow:0 0 14px rgba(255,190,95,.75);
+/* On narrow iPhones, reserve more clean image above the ending card. */
+@media(max-width:600px){
+  #chapterComplete .ending-aurora{
+    left:7%;bottom:22%;width:34vw;height:45vh;
+  }
+  #chapterComplete .ending-card{left:5%;right:5%;bottom:calc(3.5% + env(safe-area-inset-bottom));}
 }
