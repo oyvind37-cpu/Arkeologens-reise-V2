@@ -2330,7 +2330,7 @@ button:disabled{cursor:default;}
   position:absolute;inset:0;z-index:0;
   background:
     linear-gradient(to bottom,rgba(5,3,2,.08),rgba(5,3,2,.22) 58%,rgba(5,3,2,.5)),
-    url("gravkammer_v562.png?v=5.6.2") center 54%/cover no-repeat;
+    url("gravkammer_v562.png?v=5.6.3") center 54%/cover no-repeat;
   filter:brightness(1.04) saturate(.92) contrast(1.04);
   transform:scale(1.015);
 }
@@ -2482,7 +2482,7 @@ button:disabled{cursor:default;}
 #chamber .chamber-realism-bg{
   background:
     linear-gradient(to bottom,rgba(6,4,2,.08),rgba(6,4,2,.12) 58%,rgba(6,4,2,.34)),
-    url("gravkammer_v562.png?v=5.6.2") center center/cover no-repeat!important;
+    url("gravkammer_v562.png?v=5.6.3") center center/cover no-repeat!important;
   filter:brightness(.94) saturate(.92) contrast(1.03)!important;
   transform:scale(1.01)!important;
 }
@@ -2515,4 +2515,141 @@ button:disabled{cursor:default;}
 @media (orientation:portrait) and (max-width:700px){
   #chamber #sarcophagus.central-portal{left:41.5%!important;top:7.5%!important;width:46%!important;height:64%!important}
   #chamber #symbolPuzzle.symbol-puzzle{top:2%!important;width:76%!important}
+}
+
+
+/* =========================================================
+   v5.6.3 – DET TAPTE GRAVKAMMERET: STORYFLOW
+   Aurora discovers the inscription before the puzzle appears.
+   The inner chamber and chest remain hidden until the portal opens.
+   ========================================================= */
+
+/* Puzzle is part of the architecture, but initially unreadable/hidden. */
+#chamber #symbolPuzzle.discovery-locked{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:translateX(-50%) translateY(-10px) scale(.96)!important;
+  filter:blur(1.5px) brightness(.55)!important;
+}
+#chamber #symbolPuzzle.discovered{
+  opacity:1!important;
+  pointer-events:auto!important;
+  transform:translateX(-50%) translateY(0) scale(1)!important;
+  filter:none!important;
+  animation:inscriptionReveal563 .65s ease both;
+}
+@keyframes inscriptionReveal563{
+  0%{opacity:0;transform:translateX(-50%) translateY(-12px) scale(.96);filter:brightness(1.7) blur(2px)}
+  100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1);filter:none}
+}
+#chamber.inscription-found #symbolPuzzle{
+  box-shadow:0 0 24px rgba(217,167,72,.32),inset 0 0 0 2px rgba(206,153,77,.14)!important;
+}
+
+/* A second, darker volume behind the portal makes the inner chamber a real reveal. */
+#chamber .inner-chamber-reveal{
+  position:absolute;
+  left:41.5%;
+  top:7.5%;
+  width:46%;
+  height:64%;
+  opacity:0;
+  pointer-events:none;
+  z-index:24;
+  overflow:hidden;
+  border-radius:45% 45% 4% 4% / 14% 14% 4% 4%;
+  background:
+    radial-gradient(ellipse at 50% 72%,rgba(180,116,38,.20),transparent 33%),
+    linear-gradient(90deg,rgba(4,2,1,.96),rgba(25,14,7,.93) 48%,rgba(3,2,1,.98));
+  box-shadow:inset 0 0 34px #000;
+  transition:opacity .9s ease;
+}
+#chamber .inner-chamber-reveal.revealed{opacity:1}
+#chamber .inner-chamber-reveal .inner-depth{
+  position:absolute;left:12%;right:12%;top:14%;bottom:6%;
+  border:1px solid rgba(179,123,55,.28);
+  clip-path:polygon(13% 0,87% 0,100% 100%,0 100%);
+  background:
+    repeating-linear-gradient(90deg,transparent 0 18%,rgba(169,112,47,.08) 18% 19%),
+    linear-gradient(to bottom,rgba(87,49,20,.16),rgba(5,3,2,.76));
+}
+#chamber .inner-light{
+  position:absolute;top:24%;width:28%;height:48%;opacity:.35;filter:blur(8px);
+  background:radial-gradient(ellipse,rgba(232,174,75,.34),transparent 68%);
+}
+#chamber .inner-light-left{left:4%}
+#chamber .inner-light-right{right:4%}
+
+/* The reward chest lives inside the newly revealed inner room, not in the outer chamber. */
+#chamber #treasureChest.treasure-chest{
+  left:64.5%!important;
+  bottom:14%!important;
+  width:154px!important;
+  height:100px!important;
+  z-index:29!important;
+  transform:translateX(-50%) translateY(38px) scale(.78)!important;
+  opacity:0!important;
+  filter:saturate(.88) brightness(.82)!important;
+}
+#chamber #treasureChest.treasure-chest.revealed{
+  opacity:1!important;
+  transform:translateX(-50%) translateY(0) scale(1)!important;
+  filter:saturate(1) brightness(1)!important;
+  animation:chestReveal563 1s cubic-bezier(.2,.72,.22,1) both;
+}
+@keyframes chestReveal563{
+  0%{opacity:0;transform:translateX(-50%) translateY(46px) scale(.72);filter:brightness(1.7) blur(1px)}
+  100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1);filter:brightness(1)}
+}
+#chamber #treasureChest .treasure-glow{
+  left:-42px!important;top:-38px!important;width:238px!important;height:162px!important;
+  opacity:.38!important;background:radial-gradient(circle,rgba(244,191,70,.55),rgba(122,72,22,.16) 45%,transparent 70%)!important;
+}
+#chamber #treasureChest .treasure-lid{
+  height:44px!important;
+  border:3px solid #c99b43!important;
+  border-radius:18px 18px 5px 5px!important;
+  background:
+    repeating-linear-gradient(90deg,rgba(47,26,8,.20) 0 8px,transparent 8px 16px),
+    linear-gradient(#b9852e,#795018 55%,#4b2e0d)!important;
+  box-shadow:inset 0 0 10px rgba(255,220,125,.22),0 4px 7px rgba(0,0,0,.45)!important;
+}
+#chamber #treasureChest .treasure-scarab{
+  font-size:1.75rem!important;color:#2e675f!important;text-shadow:0 0 2px #d9b967,0 2px 2px #000!important;
+}
+#chamber #treasureChest .treasure-box{
+  left:4px!important;right:4px!important;height:58px!important;
+  border:3px solid #b88435!important;
+  background:
+    linear-gradient(90deg,transparent 0 13%,rgba(45,94,88,.60) 13% 17%,transparent 17% 83%,rgba(45,94,88,.60) 83% 87%,transparent 87%),
+    linear-gradient(#835718,#4f300e)!important;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.68)!important;
+}
+#chamber #treasureChest .treasure-band{
+  position:absolute;z-index:5;left:47%;top:3px;bottom:4px;width:10px;
+  border-left:1px solid #e0bc67;border-right:1px solid #67400f;
+  background:linear-gradient(90deg,#6a4211,#d1a84c,#68400e);
+}
+#chamber #treasureChest .treasure-lock{
+  position:absolute;z-index:9;left:50%;top:48%;transform:translate(-50%,-50%);
+  width:28px;height:34px;border:2px solid #cfaa54;border-radius:6px;
+  background:#39210c;color:#4f8e82;font-size:1.25rem;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 7px rgba(213,171,75,.26);
+}
+#chamber #treasureChest .treasure-wing{
+  position:absolute;top:12px;color:#bd9142;font-size:1.65rem;opacity:.72;
+}
+#chamber #treasureChest .left-wing{left:20px;transform:rotate(-13deg)}
+#chamber #treasureChest .right-wing{right:20px;transform:scaleX(-1) rotate(-13deg)}
+#chamber #treasureChest.open .treasure-lid{transform:rotate(-38deg) translate(-4px,-7px)!important}
+
+/* During portal opening, the player should read the moment rather than mash controls. */
+#chamber.inner-revealed #sarcophagus{filter:drop-shadow(0 0 18px rgba(224,169,77,.26))}
+
+@media (orientation:portrait) and (max-width:700px){
+  #chamber .inner-chamber-reveal{left:41.5%;top:7.5%;width:46%;height:64%}
+  #chamber #treasureChest.treasure-chest{left:64.5%!important;bottom:12.5%!important;width:136px!important;height:91px!important}
+}
+@media (orientation:portrait) and (max-width:390px){
+  #chamber #treasureChest.treasure-chest{left:65%!important;width:124px!important;height:86px!important}
 }

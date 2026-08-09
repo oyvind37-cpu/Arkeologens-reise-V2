@@ -1,11 +1,11 @@
 {
   "name": "Arkeologens Reise",
-  "version": "5.6.2-gravkammer-realism",
+  "version": "5.6.3-gravkammer-storyflow",
   "entry": "index.html",
   "platform": "HTML5 / GitHub Pages",
   "prologue_scenes": 9,
   "files": [
-    "README_V5_6_2_GRAVKAMMER_REALISM.txt",
+    "README_V5_6_3_GRAVKAMMER_STORYFLOW.txt",
     "aurora_character_v521.png",
     "aurora_face.jpg",
     "chapter1_ending.png",
@@ -34,5 +34,5 @@
   "keep_in_github": [
     "mystisk_musikk.mp3"
   ],
-  "notes": "v5.6.2 bygger Det tapte gravkammeret etter godkjent sceneplan: rikere egyptisk arkitektur, portal integrert med gåtepanelet, søyler/statuer/urner/fakler, mer dybde og gulllys, BLIKK/HOPP i kammeret og ryddigere to-raders mobilkontroller. Beholder v5.6.1 UI-hotfix og eksisterende progresjon/kompasslogikk."
+  "notes": "v5.6.3 gjør Det tapte gravkammeret dramaturgisk riktig: Aurora oppdager innskriften først, gåtepanelet aktiveres etter undersøkelse, ingen forhåndskjent fysisk vokter, portalen avdekker et eget innerste kammer, og gullkisten er skjult til korrekt symbolsekvens er løst. Kisten er også visuelt oppgradert."
 }

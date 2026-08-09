@@ -569,14 +569,14 @@ function loop(t){
  requestAnimationFrame(loop);
 }
 
-/* ---------- DET TAPTE GRAVKAMMERET · v5.6.2 ---------- */
+/* ---------- DET TAPTE GRAVKAMMERET · v5.6.3 STORYFLOW ---------- */
 const chamber=$("chamber"),journal=$("journal"),desert=$("desert"),chamberAurora=$("chamberAurora"),chamberCamera=$("chamberCamera"),innerDoor=$("innerDoor"),cinematicBars=$("cinematicBars"),transitionFade=$("transitionFade"),chamberExitFade=$("chamberExitFade"),inventoryBadge=$("inventoryBadge");
 const chamberText=$("chamberDialogText"),chamberObjective=$("chamberObjective"),chamberProgress=$("chamberProgress");
-const sarcophagus=$("sarcophagus"),symbolPuzzle=$("symbolPuzzle"),treasureChest=$("treasureChest"),compassArtifact=$("compassArtifact");
+const sarcophagus=$("sarcophagus"),symbolPuzzle=$("symbolPuzzle"),treasureChest=$("treasureChest"),innerChamberReveal=$("innerChamberReveal"),compassArtifact=$("compassArtifact");
 let chamberX=7,chamberLeft=false,chamberRight=false,chamberStage=0,glyphs=[],compassCollected=storage.get("aurora_compass_v521")==="yes";
 
 function chamberSay(text){chamberText.textContent=text}
-function chamberGoal(text,n){chamberObjective.textContent=text;chamberProgress.textContent=n+" / 3"}
+function chamberGoal(text,n){chamberObjective.textContent=text;chamberProgress.textContent=n+" / 4"}
 
 enterChamberBtn.onclick=()=>{
   // v5.5.4 Safari fix: never hide the compass because of stale localStorage from an older play-through.
@@ -605,11 +605,13 @@ enterChamberBtn.onclick=()=>{
     chamberAurora.classList.add("walk");
     chamberStage=0;
     glyphs=[];
-    symbolPuzzle.classList.remove("solved");
+    symbolPuzzle.classList.remove("solved","discovered");
+    symbolPuzzle.classList.add("discovery-locked");
     symbolPuzzle.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
     sarcophagus.classList.remove("open");
-    chamber.classList.remove("insight-active");
-    treasureChest.classList.remove("revealed","open");
+    chamber.classList.remove("insight-active","inscription-found","inner-revealed");
+    innerChamberReveal.classList.remove("revealed");
+    treasureChest.classList.remove("revealed","open","finished");
     compassArtifact.classList.remove("show","collected");
   if(compassCollected){compassArtifact.style.display="none";}else{compassArtifact.style.display="block";}
     chamberGoal("Gå inn i kammeret",1);
@@ -627,8 +629,8 @@ enterChamberBtn.onclick=()=>{
       chamberCamera.classList.remove("entering");
       chamberCamera.classList.add("settled");
       innerDoor.classList.add("passed");
-      chamberGoal("Undersøk hieroglyfene",1);
-      chamberSay("Utrolig... veggene er dekket av hieroglyfer. Ta deg tid til å se.");
+      chamberGoal("Finn spor i veggen",1);
+      chamberSay("Veggene er dekket av tegn og relieffer. Noe her ser ut til å være mer enn dekor.");
       cinematicBars.classList.remove("active");
       setTimeout(()=>cinematicBars.classList.add("hidden"),700);
     }
@@ -644,23 +646,27 @@ function chamberHold(id,key){
 chamberHold("chamberLeft","left");
 chamberHold("chamberRight","right");
 
-/* v5.6.2: BLIKK highlights architectural clues without solving the puzzle for the player. */
+/* v5.6.3: BLIKK hjelper Aurora å oppdage spor, men avslører aldri løsningen på forhånd. */
 $("chamberVision").onclick=()=>{
   chamber.classList.add("insight-active");
   pulseAuroraAction(chamberAurora,"look-around",1250);
   if(chamberStage===0){
-    chamberSay("Se på portalen: symbolene er hugget inn som en del av arkitekturen. Jeg bør undersøke dem nærmere.");
+    chamberSay("Steinblokkene rundt portalen er bearbeidet annerledes. En smal innskrift fortsetter bak relieffene.");
   }else if(chamberStage===1){
-    chamberSay("Tre tegn går igjen i relieffene: solskiven, Horus-øyet og ankh-tegnet.");
+    chamberSay("Tre tegn gjentas i innskriften: solskiven, Horus-øyet og ankh. Rekkefølgen må ligge i teksten.");
+  }else if(chamberStage===2){
+    chamberSay("Portalen reagerer på tegnene. Jeg bør vente og se hva mekanismen avslører.");
+  }else if(chamberStage===3){
+    chamberSay("Bak portalen ligger et mindre, innerste rom. Kisten står plassert med vilje i siktlinjen fra inngangen.");
   }else{
-    chamberSay("Lyset faller annerledes gjennom den åpne portalen. Kisten der inne er ikke tilfeldig plassert.");
+    chamberSay("Kisten er forseglet, men konstruksjonen er intakt. Jeg må dokumentere funnet før jeg rører mer enn nødvendig.");
   }
   setTimeout(()=>chamber.classList.remove("insight-active"),1500);
 };
 
 /* HOPP remains available as a tactile movement action, but is kept subtle indoors. */
 $("chamberJump").onclick=()=>{
-  if(chamberStage===3 && !compassCollected)return;
+  if(chamberStage===4 && !compassCollected)return;
   chamberAurora.classList.remove("chamber-hop");
   void chamberAurora.offsetWidth;
   chamberAurora.classList.add("chamber-hop");
@@ -676,12 +682,23 @@ symbolPuzzle.querySelectorAll("button").forEach(button=>{
       if(glyphs.join(",")==="sun,eye,ankh"){
         chamberStage=2;
         symbolPuzzle.classList.add("solved");
+        chamberGoal("Portalen åpner seg",2);
+        chamberSay("Det stemmer. Mekanismen reagerer... dette må være inngangen til et innerste kammer.");
         sarcophagus.classList.add("open");
-        treasureChest.classList.add("revealed");
-        chamberGoal("Undersøk gullkisten",3);
-        chamberSay("Sol, øye og liv. Den forseglede portalen åpner seg... og avslører en gammel gullkiste.");
+
+        setTimeout(()=>{
+          innerChamberReveal.classList.add("revealed");
+          chamber.classList.add("inner-revealed");
+        },520);
+
+        setTimeout(()=>{
+          treasureChest.classList.add("revealed");
+          chamberStage=3;
+          chamberGoal("Utforsk det innerste kammeret",3);
+          chamberSay("Der inne... en forseglet kiste. Den var skjult bak portalen hele tiden.");
+        },1250);
       }else{
-        chamberSay("Rekkefølgen er feil. Les veggen fra soloppgang mot livstegnet.");
+        chamberSay("Rekkefølgen stemmer ikke med innskriften. Jeg må lese teksten fra begynnelsen igjen.");
         glyphs=[];
         setTimeout(()=>symbolPuzzle.querySelectorAll("button").forEach(b=>b.classList.remove("selected")),450);
       }
@@ -693,40 +710,52 @@ $("chamberInspect").onclick=()=>{
   if(chamberStage===0){
     pulseAuroraAction(chamberAurora,"study-object",1450);
     if(chamberX<30){
-      chamberSay("Jeg må gå nærmere hieroglyfene i midten av kammeret.");
+      chamberSay("Jeg må gå nærmere innskriften ved portalen før jeg kan lese den.");
       return;
     }
     chamberStage=1;
-    chamberGoal("Løs vokternes rekkefølge",2);
-    chamberSay("Innskriften sier: Solen ser. Øyet vokter. Livet åpner.");
+    glyphs=[];
+    chamber.classList.add("inscription-found");
+    symbolPuzzle.classList.remove("discovery-locked");
+    symbolPuzzle.classList.add("discovered");
+    chamberGoal("Tolk de tre tegnene",2);
+    chamberSay("Vent... dette er ikke bare dekor. Tegnene danner en instruksjon: Solen våkner først. Øyet følger dens ferd. Livstegnet åpner veien.");
     return;
   }
   if(chamberStage===1){
-    chamberSay("Trykk symbolene i denne rekkefølgen: sol, øye og ankh.");
+    pulseAuroraAction(chamberAurora,"study-object",900);
+    chamberSay("Jeg må følge innskriften, ikke gjette. De tre tegnene er solskiven, Horus-øyet og ankh.");
     return;
   }
   if(chamberStage===2){
-    if(chamberX<43){
-      chamberSay("Jeg må stå nærmere gullkisten.");
+    chamberSay("Portalen er i bevegelse. Jeg venter til mekanismen har stanset.");
+    return;
+  }
+  if(chamberStage===3){
+    if(chamberX<48){
+      chamberSay("Jeg må gå nærmere den forseglede kisten i det innerste kammeret.");
       return;
     }
     pulseAuroraAction(chamberAurora,"bend",1250);
-    chamberStage=3;
-    // v5.5.5: lock Aurora in front of the chest during the compass interaction.
+    chamberStage=4;
     chamberLeft=false; chamberRight=false; chamberVelocity=0;
-    chamberX=40;
+    chamberX=47;
     chamberAurora.style.left=chamberX+"%";
     chamberAurora.classList.remove("walk","face-left","start-step");
     chamberAurora.classList.add("compass-front");
     treasureChest.classList.add("open");
     compassArtifact.classList.add("show");
-    chamberGoal("Ta opp kompasset",3);
-    chamberSay("Et kompass... men nålen peker ikke mot nord. Trykk på kompasset for å undersøke funnet.");
+    chamberGoal("Dokumenter funnet",4);
+    chamberSay("Kisten inneholder et gammelt kompass. Nålen peker ikke mot nord... Jeg fotograferer plasseringen før jeg løfter det ut.");
+    return;
+  }
+  if(chamberStage===4 && !compassCollected){
+    chamberSay("Trykk på kompasset for å undersøke funnet nærmere.");
   }
 };
 
 compassArtifact.onclick=()=>{
-  if(chamberStage!==3 || compassCollected)return;
+  if(chamberStage!==4 || compassCollected)return;
   chamberLeft=false; chamberRight=false; chamberVelocity=0;
   chamberAurora.classList.add("compass-front","compass-reach");
   pulseAuroraAction(chamberAurora,"reach-object",800);
@@ -748,7 +777,7 @@ $("closeJournal").onclick=()=>{
   inventoryBadge.classList.remove("hidden");
   setTimeout(()=>inventoryBadge.classList.add("hidden"),2400);
   chamberSay("Funnet er registrert. Nå må vi tilbake til dagslyset.");
-  chamberGoal("Forlat gravkammeret",3);
+  chamberGoal("Forlat gravkammeret",4);
 
   chamberLeft=false;
   chamberRight=false;
@@ -773,9 +802,9 @@ $("closeJournal").onclick=()=>{
 let chamberVelocity=0;
 function chamberLoop(){
   if(chamber.classList.contains("active")){
-    if(chamberStage===3 && !compassCollected){
+    if(chamberStage===4 && !compassCollected){
       chamberLeft=false; chamberRight=false; chamberVelocity=0;
-      chamberX=40; chamberAurora.style.left=chamberX+"%";
+      chamberX=47; chamberAurora.style.left=chamberX+"%";
       chamberAurora.classList.remove("walk","face-left","start-step");
       chamberAurora.classList.add("compass-front");
       requestAnimationFrame(chamberLoop); return;

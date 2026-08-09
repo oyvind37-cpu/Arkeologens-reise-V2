@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="theme-color" content="#0b0704">
-<title>Arkeologens Reise 5.6.2 – Det tapte gravkammeret</title>
+<title>Arkeologens Reise 5.6.3 – Det tapte gravkammeret</title>
 
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#050403">
@@ -11,10 +11,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Arkeologens Reise">
-  <link rel="manifest" href="manifest.webmanifest?v=5.6.2">
+  <link rel="manifest" href="manifest.webmanifest?v=5.6.3">
   <link rel="apple-touch-icon" href="icon-180.png">
 
-<link rel="stylesheet" href="style.css?v=5.6.2">
+<link rel="stylesheet" href="style.css?v=5.6.3">
 </head>
 <body>
 
@@ -163,9 +163,9 @@
       <div class="portal-threshold"></div>
     </div>
 
-    <div id="symbolPuzzle" class="symbol-puzzle">
-      <h3>VOKTERNES REKKEFØLGE</h3>
-      <p>Hieroglyfene viser veien</p>
+    <div id="symbolPuzzle" class="symbol-puzzle discovery-locked" aria-live="polite">
+      <h3>DE TRE TEGNENE</h3>
+      <p>Innskriften viser veien</p>
       <div>
         <button type="button" data-glyph="sun"><span>☀</span><small>SOL</small></button>
         <button type="button" data-glyph="eye"><span>𓂀</span><small>ØYE</small></button>
@@ -173,10 +173,18 @@
       </div>
     </div>
 
-    <div id="treasureChest" class="treasure-chest">
+    <div id="innerChamberReveal" class="inner-chamber-reveal" aria-hidden="true">
+      <div class="inner-depth"></div>
+      <div class="inner-light inner-light-left"></div>
+      <div class="inner-light inner-light-right"></div>
+    </div>
+
+    <div id="treasureChest" class="treasure-chest" aria-label="Forseglet dekorert gullkiste">
       <div class="treasure-glow"></div>
-      <div class="treasure-lid"><span>𓃭</span></div>
-      <div class="treasure-box"></div>
+      <div class="treasure-lid"><span class="treasure-scarab">𓆣</span></div>
+      <div class="treasure-band"></div>
+      <div class="treasure-box"><span class="treasure-wing left-wing">︿</span><span class="treasure-wing right-wing">︿</span></div>
+      <div class="treasure-lock">☥</div>
     </div>
 
     <button type="button" id="compassArtifact" class="compass-artifact" aria-label="Ta opp det tapte kompasset"></button>
@@ -195,7 +203,7 @@
     <div id="transitionFade" class="transition-fade hidden"></div>
     <div class="chamber-hud">
       <div><b>DET TAPTE GRAVKAMMERET</b><small>Forseglet i over 3000 år</small></div>
-      <div><b id="chamberObjective">Undersøk hieroglyfene</b><small id="chamberProgress">1 / 3</small></div>
+      <div><b id="chamberObjective">Finn spor i veggen</b><small id="chamberProgress">1 / 4</small></div>
     </div>
 
     <div class="chamber-dialog">
@@ -283,6 +291,6 @@
   </section>
 
 </main>
-<script src="game.js?v=5.6.2"></script>
+<script src="game.js?v=5.6.3"></script>
 </body>
 </html>
