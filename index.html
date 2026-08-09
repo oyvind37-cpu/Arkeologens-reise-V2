@@ -6,7 +6,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="theme-color" content="#0b0704">
-<title>Arkeologens Reise 5.7.1 – Aurora Motion Hotfix</title>
+<title>Arkeologens Reise 5.7.2 – Feltdagbok / geografisk verdenskart</title>
 
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#050403">
@@ -14,13 +14,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Arkeologens Reise">
-  <link rel="manifest" href="manifest.webmanifest?v=571">
+  <link rel="manifest" href="manifest.webmanifest?v=572">
   <link rel="apple-touch-icon" href="icon-180.png">
 
-<link rel="stylesheet" href="style_571.css?v=571">
+<link rel="stylesheet" href="style_572.css?v=572">
 </head>
 <body>
 <main id="app">
+  <button type="button" id="journalQuickBtn" class="journal-quick" hidden aria-label="Åpne feltdagboken"><span class="journal-quick-icon">▤</span><span>FELTDAGBOK</span></button>
   <section id="intro" class="screen active">
     <div class="intro-bg"></div><div class="shade intro-shade"></div><div class="dust"></div>
     <button type="button" id="musicIntroBtn" class="music-intro" aria-label="Slå musikk av eller på">♫ MUSIKK PÅ</button>
@@ -251,7 +252,6 @@
     <div class="desert-controls">
       <button type="button" id="desertLeft">◀</button>
       <button type="button" id="desertRight">▶</button>
-      <button type="button" id="desertInspect">SE TILBAKE</button>
     </div>
 
     <div id="chapterComplete" class="chapter-complete hidden" aria-label="Kapittel 1 fullført">
@@ -267,46 +267,102 @@
 
 
   <section id="worldMap" class="screen world-map-screen" aria-label="Verdenskart">
-    <div class="world-map-bg" aria-hidden="true"></div>
-    <div class="world-map-shade" aria-hidden="true"></div>
     <header class="world-map-hud">
-      <div><b>VERDENSKART</b><small>Aurora Vales ekspedisjoner</small></div>
+      <div><b>VERDENSKART</b><small>Geografisk kart · Aurora Vales ekspedisjoner</small></div>
       <div class="world-map-status"><span class="done">✓ EGYPT FULLFØRT</span><span class="unlocked">MYKENE LÅST OPP</span></div>
     </header>
-    <div class="world-map-route" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+    <div id="geoMapShell" class="geo-map-shell regional" aria-label="Geografisk verdenskart med historiske reisemål">
+      <div class="geo-map-plane">
+        <img src="world_map_geographic_v572.png" alt="Verdenskart i Robinson-projeksjon">
+        <svg class="geo-map-route" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M 587.97 170.21 Q 570 142 558.90 133.05"></path>
+        </svg>
+
+        <button class="map-site done" style="--x:58.7966%;--y:34.0411%" data-site="egypt" aria-label="Kongenes dal, Egypt, fullført"><i></i><span>EGYPT</span></button>
+        <button class="map-site unlocked" style="--x:55.8898%;--y:26.6105%" data-site="mycenae" aria-label="Mykene, Hellas, låst opp"><i></i><span>MYKENE</span></button>
+        <button class="map-site locked" style="--x:53.1670%;--y:24.0399%" data-site="rome" aria-label="Roma, Italia, låst"><i></i><span>ROMA</span></button>
+        <button class="map-site locked" style="--x:60.0964%;--y:26.9239%" data-site="gobekli" aria-label="Göbekli Tepe, Tyrkia, låst"><i></i><span>GÖBEKLI TEPE</span></button>
+        <button class="map-site locked" style="--x:59.4415%;--y:31.1950%" data-site="petra" aria-label="Petra, Jordan, låst"><i></i><span>PETRA</span></button>
+        <button class="map-site locked" style="--x:30.0076%;--y:58.1747%" data-site="machu" aria-label="Machu Picchu, Peru, låst"><i></i><span>MACHU PICCHU</span></button>
+        <button class="map-site locked" style="--x:25.8637%;--y:37.1767%" data-site="chichen" aria-label="Chichén Itzá, Mexico, låst"><i></i><span>CHICHÉN ITZÁ</span></button>
+        <button class="map-site locked" style="--x:52.3325%;--y:13.6640%" data-site="oseberg" aria-label="Oseberg, Vestfold, Norge, låst"><i></i><span>OSEBERG</span></button>
+      </div>
+      <div class="geo-map-tools" role="group" aria-label="Kartutsnitt">
+        <button type="button" id="mapRegionBtn" class="active">MIDDELHAVET</button>
+        <button type="button" id="mapWorldBtn">HELE VERDEN</button>
+      </div>
+    </div>
+
     <div class="world-map-panel">
-      <small>NESTE EKSPEDISJON</small>
-      <h2>Mykene</h2>
-      <p>Kompasset fra gravkammeret peker videre mot Hellas. Mykene er nå tilgjengelig som neste reisemål.</p>
+      <small id="mapPanelKicker">NESTE EKSPEDISJON</small>
+      <h2 id="mapPanelTitle">Mykene</h2>
+      <p id="mapPanelText">Kompasset fra gravkammeret peker videre mot Hellas. Mykene er nå tilgjengelig som neste reisemål.</p>
       <button type="button" id="mycenaeNext">MYKENE · LÅST OPP</button>
       <div id="mapNotice" class="map-notice" aria-live="polite"></div>
     </div>
   </section>
 
-  <section id="journal" class="screen journal-screen">
-    <div class="journal-book">
+  <section id="journal" class="screen journal-screen" aria-label="Feltdagbok">
+    <div class="journal-book journal-v572">
       <div class="journal-page">
-        <header>
-          <span>FELTDAGBOK</span>
-          <small>Kongenes dal · Objekt 001</small>
+        <header class="journal-header">
+          <div><span>FELTDAGBOK</span><small>Kongenes dal · Ekspedisjon 01</small></div>
+          <strong id="journalProgressText">1 / 7 SPOR</strong>
         </header>
-        <div class="journal-sketch">
-          <div class="sketch-compass">🧭</div>
-          <div class="sketch-lines"></div>
+
+        <nav class="journal-tabs" aria-label="Feltdagbok faner">
+          <button type="button" class="active" data-jtab="notes">NOTATER</button>
+          <button type="button" data-jtab="map">KART</button>
+          <button type="button" data-jtab="finds">FUNN</button>
+        </nav>
+
+        <div class="journal-panels">
+          <section class="journal-panel active" data-jpanel="notes">
+            <h2>Ekspedisjonslogg</h2>
+            <p class="journal-meta">Dagboken fylles ut automatisk når Aurora finner og dokumenterer nye spor.</p>
+            <div id="journalNotes" class="journal-notes"></div>
+          </section>
+
+          <section class="journal-panel" data-jpanel="map">
+            <h2>Kart over funnstedet</h2>
+            <p class="journal-meta">Nye områder tegnes inn etter hvert som de blir oppdaget.</p>
+            <div class="field-map" aria-label="Skjematisk kart over den glemte graven">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <path class="field-route-base" d="M8 84 L25 76 L38 63 L53 53 L66 40 L80 28 L91 18"></path>
+              </svg>
+              <div class="field-node" data-jstep="entrance" style="--x:8%;--y:84%"><i></i><span>INNGANG</span></div>
+              <div class="field-node" data-jstep="floor" style="--x:25%;--y:76%"><i></i><span>GULVSTEIN</span></div>
+              <div class="field-node" data-jstep="arrows" style="--x:38%;--y:63%"><i></i><span>PILER</span></div>
+              <div class="field-node" data-jstep="eye" style="--x:53%;--y:53%"><i></i><span>HORUS-ØYE</span></div>
+              <div class="field-node" data-jstep="inscription" style="--x:66%;--y:40%"><i></i><span>INNSKRIFT</span></div>
+              <div class="field-node" data-jstep="inner" style="--x:80%;--y:28%"><i></i><span>INNERSTE KAMMER</span></div>
+              <div class="field-node" data-jstep="compass" style="--x:91%;--y:18%"><i></i><span>KOMPASS</span></div>
+            </div>
+            <div id="journalMapLegend" class="journal-map-legend">Kartlegging pågår.</div>
+          </section>
+
+          <section class="journal-panel" data-jpanel="finds">
+            <h2>Registrerte funn</h2>
+            <div id="journalFindLocked" class="journal-find-empty">Ingen artefakter er registrert ennå.</div>
+            <article id="journalCompassFind" class="journal-find-card hidden">
+              <img src="compass_v521.png" alt="Det tapte kompasset">
+              <div>
+                <small>OBJEKT 001</small>
+                <h3>Det tapte kompasset</h3>
+                <p id="journalCompassStatus">Lokalisert i den forseglede kisten. Ikke fjernet ennå.</p>
+              </div>
+            </article>
+          </section>
         </div>
-        <h2>Det tapte kompasset</h2>
-        <p class="journal-meta">Funnet i et forseglet gravkammer bak Horus-mekanismen.</p>
-        <blockquote>
-          «Et kompass, men nålen peker ikke mot nord. Symbolene antyder en forbindelse til Mykene.
-          Dette er ikke slutten på funnet – det er begynnelsen på reisen.»
-        </blockquote>
-        <button type="button" id="closeJournal">LUKK FELTDAGBOKEN</button>
+
+        <button type="button" id="closeJournal" class="journal-close">LUKK FELTDAGBOKEN</button>
       </div>
     </div>
   </section>
 
 </main>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
-<script src="game_571.js?v=571"></script>
+<script src="game_572.js?v=572"></script>
 </body>
 </html>
