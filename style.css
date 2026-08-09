@@ -2802,3 +2802,147 @@ button:disabled{cursor:default;}
   }
   #chapterComplete .ending-card{left:5%;right:5%;bottom:calc(3.5% + env(safe-area-inset-bottom));}
 }
+
+/* =========================================================
+   v5.7.0 – AURORA MOTION / GSAP + WORLD MAP
+   Stable v5.6.6 gameplay retained underneath this layer.
+   ========================================================= */
+
+/* GSAP owns Aurora's body motion only when the library loaded successfully.
+   If the CDN is unavailable, the older CSS animations remain as a fallback. */
+html.gsap-ready .aurora-character-sprite{
+  animation:none!important;
+  will-change:transform,filter;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transform-style:preserve-3d;
+}
+html.gsap-ready .human-rig{
+  perspective:520px;
+  -webkit-perspective:520px;
+}
+html.gsap-ready .shadow,
+html.gsap-ready .chamber-shadow,
+html.gsap-ready .desert-shadow{
+  will-change:transform,opacity;
+}
+
+/* A tiny posture shift when Aurora is moving makes the sprite read less like
+   a board-game piece even before the step cycle becomes visible. */
+html.gsap-ready .aurora.walk,
+html.gsap-ready .chamber-aurora.walk,
+html.gsap-ready .desert-aurora.walk{
+  filter:drop-shadow(0 1px 0 rgba(255,220,150,.04));
+}
+
+/* --- World map after Egypt chapter 1 --- */
+.world-map-screen{
+  background:#080604;
+  overflow:hidden;
+}
+.world-map-bg{
+  position:absolute;
+  inset:0;
+  background:url("world_map_v570.jpg") 48% 50%/cover no-repeat;
+  filter:brightness(.72) saturate(.92) contrast(1.04);
+  transform:scale(1.03);
+}
+.world-map-shade{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(to bottom,rgba(3,2,1,.78) 0 13%,transparent 28% 61%,rgba(3,2,1,.88) 86% 100%),
+    radial-gradient(circle at 22% 24%,rgba(221,166,70,.18),transparent 22%);
+  pointer-events:none;
+}
+.world-map-hud{
+  position:absolute;
+  z-index:8;
+  top:calc(12px + env(safe-area-inset-top));
+  left:14px;
+  right:14px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:13px 14px;
+  border:1px solid rgba(199,147,67,.75);
+  border-radius:17px;
+  background:rgba(8,5,3,.80);
+  backdrop-filter:blur(8px);
+}
+.world-map-hud b{display:block;color:#f1c675;font-size:1.05rem;letter-spacing:.05em}
+.world-map-hud small{display:block;color:#d8c39d;margin-top:2px}
+.world-map-status{display:flex;flex-direction:column;align-items:flex-end;gap:5px;font-size:.68rem;font-weight:900;letter-spacing:.04em}
+.world-map-status span{padding:5px 7px;border:1px solid rgba(219,170,81,.52);border-radius:999px;background:rgba(0,0,0,.42);white-space:nowrap}
+.world-map-status .done{color:#d9e9bf}
+.world-map-status .unlocked{color:#f3ca76;box-shadow:0 0 16px rgba(236,181,80,.20)}
+
+.world-map-panel{
+  position:absolute;
+  z-index:9;
+  left:5%;
+  right:5%;
+  bottom:calc(22px + env(safe-area-inset-bottom));
+  padding:16px;
+  border:1px solid #bd8c42;
+  border-radius:19px;
+  background:rgba(8,5,3,.91);
+  backdrop-filter:blur(10px);
+  box-shadow:0 14px 40px rgba(0,0,0,.46);
+}
+.world-map-panel small{color:#e8b85e;font-weight:900;letter-spacing:.14em}
+.world-map-panel h2{margin:5px 0 4px;color:#f1ce86;font:900 1.65rem Georgia,serif}
+.world-map-panel p{margin:0 0 12px;color:#f0dfbd;line-height:1.35;font-size:.92rem}
+#mycenaeNext{
+  width:100%;
+  min-height:54px;
+  border:1px solid #e0b55a;
+  border-radius:15px;
+  background:linear-gradient(#709d3c,#426b26);
+  color:white;
+  font-weight:900;
+  letter-spacing:.02em;
+  box-shadow:0 7px 18px rgba(0,0,0,.36);
+}
+.map-notice{min-height:1.2em;margin-top:8px;color:#e6c989;font-size:.8rem;text-align:center}
+
+/* Light trail leading visually from Egypt toward the newly unlocked Mykene.
+   This is deliberately schematic; the actual route artwork remains in the map. */
+.world-map-route{
+  position:absolute;
+  z-index:7;
+  left:17%;
+  top:29%;
+  width:32%;
+  height:9%;
+  transform:rotate(-8deg);
+  pointer-events:none;
+}
+.world-map-route i{
+  position:absolute;
+  width:7px;height:7px;border-radius:50%;
+  background:#efc46e;
+  box-shadow:0 0 11px rgba(239,196,110,.9);
+  opacity:.22;
+}
+.world-map-route i:nth-child(1){left:2%;top:65%}
+.world-map-route i:nth-child(2){left:24%;top:48%}
+.world-map-route i:nth-child(3){left:46%;top:32%}
+.world-map-route i:nth-child(4){left:68%;top:18%}
+.world-map-route i:nth-child(5){left:90%;top:5%}
+
+@media (max-width:700px){
+  .world-map-bg{background-position:43% 48%}
+  .world-map-hud{top:calc(10px + env(safe-area-inset-top));padding:11px 12px}
+  .world-map-hud b{font-size:.94rem}
+  .world-map-hud small{font-size:.72rem}
+  .world-map-status{font-size:.59rem}
+  .world-map-panel{left:4%;right:4%;bottom:calc(16px + env(safe-area-inset-bottom));padding:14px}
+  .world-map-panel h2{font-size:1.45rem}
+  .world-map-panel p{font-size:.84rem}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .world-map-route{display:none}
+}

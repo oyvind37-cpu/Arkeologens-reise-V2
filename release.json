@@ -1,9 +1,10 @@
 {
   "name": "Arkeologens Reise",
-  "version": "5.6.4-safari-intro-fix",
+  "version": "5.7.0-aurora-motion",
   "entry": "index.html",
   "platform": "HTML5 / GitHub Pages",
   "prologue_scenes": 9,
+  "animation_engine": "GSAP 3.15.0 (CDN) with CSS fallback",
   "keep_in_github": ["mystisk_musikk.mp3"],
-  "notes": "v5.6.4 beholder storyflowen fra v5.6.3, retter Oslo-lufthavn-scenen i introen, fjerner ordet 'Helst', fjerner den overflødige tittelen 'Noen følger etter', bruker nytt videofilnavn for å omgå Safari-cache, og skjuler fullskjermknappen over selve spillscenene på iPhone."
+  "notes": "v5.7.0 bygger på den låste v5.6.6-basen. Aurora får GSAP-styrt idle, gange, myk stopp, kroppsvending, se-seg-rundt, bøying, rekke-bevegelse og hopp. Kamera/fotografering er fjernet fra teksten inntil et kamera faktisk implementeres. Kapittel 1 avsluttes med TILBAKE TIL VERDENSKARTET; Egypt markeres fullført og Mykene låses opp."
 }

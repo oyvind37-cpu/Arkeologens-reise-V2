@@ -12,30 +12,167 @@ const plate=$("pressurePlate"),arrows=$("arrows"),eyeWall=$("eyeWall"),eyeGlow=$
 const door=$("door"),wow=$("wowLight"),nearHint=$("nearHint"),interact=$("interact"),enterChamberBtn=$("enterChamberBtn");
 const state={x:180,left:false,right:false,jumping:false,stage:0,vision:false,camera:0,idle:0,last:0,nearEye:false,eyeOpened:false,floorHintShown:false};
 
-/* ---------- AURORA MOTION SYSTEM v5.6 BASIC ----------
-   Keeps the approved v5.2.1 sprite, but makes movement and interaction
-   feel less "statue-like" without changing the game flow. */
+/* ---------- AURORA MOTION SYSTEM v5.7.0 / GSAP ----------
+   The approved v5.2.1 Aurora artwork is preserved. GSAP now controls posture,
+   step rhythm, turning, braking and archaeological interaction poses. */
 let mainVelocity=0;
 let nextAmbientMotion=performance.now()+4200;
+const motionGSAP=window.gsap||null;
+const auroraMotionControllers=new WeakMap();
+if(motionGSAP)document.documentElement.classList.add("gsap-ready");
 
+class AuroraMotionController{
+  constructor(el){
+    this.el=el;
+    this.sprite=el?.querySelector(".aurora-character-sprite");
+    this.shadow=el?.querySelector(".shadow,.chamber-shadow,.desert-shadow");
+    this.walkTl=null;
+    this.idleTl=null;
+    this.actionTl=null;
+    this.turnTl=null;
+    this.walking=false;
+    this.actionBusy=false;
+    this.facing=el?.classList.contains("face-left")?"left":"right";
+    if(this.sprite && motionGSAP)this.startIdle();
+  }
+  killIdle(){if(this.idleTl){this.idleTl.kill();this.idleTl=null}}
+  killWalk(){if(this.walkTl){this.walkTl.kill();this.walkTl=null}this.walking=false}
+  killAction(){if(this.actionTl){this.actionTl.kill();this.actionTl=null}this.actionBusy=false}
+  normalize(duration=.18){
+    if(!motionGSAP||!this.sprite)return;
+    motionGSAP.to(this.sprite,{x:0,y:0,rotation:0,rotationY:0,scaleX:1,scaleY:1,duration,ease:"power2.out",overwrite:"auto"});
+    if(this.shadow)motionGSAP.to(this.shadow,{scaleX:1,scaleY:1,opacity:.42,duration,ease:"power2.out",overwrite:"auto"});
+  }
+  startIdle(){
+    if(!motionGSAP||!this.sprite||this.walking||this.actionBusy||this.idleTl)return;
+    this.killIdle();
+    motionGSAP.set(this.sprite,{transformOrigin:"50% 100%"});
+    this.idleTl=motionGSAP.timeline({repeat:-1,yoyo:true,defaults:{ease:"sine.inOut"}})
+      .to(this.sprite,{y:-1.8,rotation:.28,scaleY:1.006,duration:1.9})
+      .to(this.sprite,{x:.55,y:-.7,rotation:-.18,scaleY:1.002,duration:1.55});
+    if(this.shadow){
+      this.idleTl.to(this.shadow,{scaleX:.975,opacity:.37,duration:1.9},0)
+        .to(this.shadow,{scaleX:1,opacity:.42,duration:1.55},1.9);
+    }
+  }
+  walk(speed=1){
+    if(!motionGSAP||!this.sprite||this.actionBusy)return;
+    this.killIdle();
+    if(!this.walkTl){
+      this.walkTl=motionGSAP.timeline({repeat:-1,defaults:{ease:"sine.inOut"}})
+        .to(this.sprite,{x:-1.3,y:-.4,rotation:-1.05,scaleY:.994,duration:.12})
+        .to(this.sprite,{x:0,y:-3.8,rotation:.55,scaleY:1.008,duration:.12})
+        .to(this.sprite,{x:1.35,y:-.2,rotation:1.05,scaleY:.994,duration:.12})
+        .to(this.sprite,{x:0,y:-3.2,rotation:-.42,scaleY:1.006,duration:.12});
+      if(this.shadow){
+        this.walkTl.to(this.shadow,{scaleX:1.07,scaleY:.88,opacity:.34,duration:.12},0)
+          .to(this.shadow,{scaleX:.92,scaleY:1.04,opacity:.44,duration:.12},.12)
+          .to(this.shadow,{scaleX:1.06,scaleY:.89,opacity:.34,duration:.12},.24)
+          .to(this.shadow,{scaleX:.93,scaleY:1.03,opacity:.43,duration:.12},.36);
+      }
+    }
+    this.walking=true;
+    this.walkTl.timeScale(Math.max(.72,Math.min(1.55,speed))).play();
+  }
+  stop(){
+    if(!motionGSAP||!this.sprite)return;
+    const wasWalking=this.walking;
+    this.killWalk();
+    if(!wasWalking){if(!this.idleTl)this.startIdle();return}
+    this.killIdle();
+    motionGSAP.timeline({onComplete:()=>this.startIdle()})
+      .to(this.sprite,{x:1.1,y:1.5,rotation:-.55,scaleY:.992,duration:.10,ease:"power1.out"})
+      .to(this.sprite,{x:0,y:0,rotation:0,scaleX:1,scaleY:1,duration:.18,ease:"back.out(1.5)"});
+    if(this.shadow)motionGSAP.to(this.shadow,{scaleX:1,scaleY:1,opacity:.42,duration:.22,ease:"power2.out"});
+  }
+  turn(left){
+    const desired=left?"left":"right";
+    if(this.facing===desired){this.el.classList.toggle("face-left",left);return}
+    this.facing=desired;
+    this.el.dataset.facing=desired;
+    if(!motionGSAP||!this.sprite){this.el.classList.toggle("face-left",left);return}
+    this.killIdle();
+    if(this.turnTl)this.turnTl.kill();
+    this.turnTl=motionGSAP.timeline({onComplete:()=>{this.turnTl=null;if(!this.walking&&!this.actionBusy)this.startIdle()}})
+      .to(this.sprite,{rotationY:left?68:-68,x:left?-2:2,scaleY:.99,duration:.10,ease:"power2.in"})
+      .add(()=>{
+        this.el.classList.toggle("face-left",left);
+        motionGSAP.set(this.sprite,{rotationY:left?-68:68,x:left?2:-2});
+      })
+      .to(this.sprite,{rotationY:0,x:0,scaleY:1,duration:.14,ease:"power2.out"});
+  }
+  action(name,duration=1200){
+    if(!motionGSAP||!this.sprite)return false;
+    this.killIdle();this.killWalk();this.killAction();
+    this.actionBusy=true;
+    const done=()=>{this.actionBusy=false;this.actionTl=null;this.el.classList.remove(name);this.normalize(.12);this.startIdle()};
+    const tl=this.actionTl=motionGSAP.timeline({onComplete:done});
+    if(name==="look-around"){
+      tl.to(this.sprite,{x:-2.2,y:-1.2,rotation:-1.15,duration:.32,ease:"power2.inOut"})
+        .to(this.sprite,{x:2.4,y:-.8,rotation:1.25,duration:.46,ease:"power2.inOut"})
+        .to(this.sprite,{x:0,y:0,rotation:-.2,duration:.30,ease:"power2.out"});
+    }else if(name==="bend"){
+      tl.to(this.sprite,{y:4,rotation:2.2,scaleY:.965,duration:.28,ease:"power2.inOut"})
+        .to(this.sprite,{x:4,y:13,rotation:5.2,scaleY:.905,duration:.34,ease:"power2.inOut"})
+        .to(this.sprite,{x:4,y:12,rotation:4.5,scaleY:.91,duration:Math.max(.18,duration/1000-.88),ease:"sine.inOut"})
+        .to(this.sprite,{x:0,y:0,rotation:0,scaleY:1,duration:.28,ease:"power2.out"});
+    }else if(name==="reach-object"){
+      tl.to(this.sprite,{x:6,y:4,rotation:3.3,scaleX:.985,scaleY:.985,duration:.30,ease:"power2.inOut"})
+        .to(this.sprite,{x:8,y:5,rotation:2.6,duration:.22,ease:"sine.inOut"})
+        .to(this.sprite,{x:0,y:0,rotation:0,scaleX:1,scaleY:1,duration:.28,ease:"power2.out"});
+    }else{
+      tl.to(this.sprite,{x:-1.2,y:1,rotation:-1.1,scale:.995,duration:.28,ease:"power2.inOut"})
+        .to(this.sprite,{x:3,y:3,rotation:2.1,scale:.985,duration:.36,ease:"power2.inOut"})
+        .to(this.sprite,{x:0,y:0,rotation:0,scale:1,duration:.30,ease:"power2.out"});
+    }
+    return true;
+  }
+  jump(onComplete){
+    if(!motionGSAP||!this.sprite)return false;
+    this.killIdle();this.killWalk();this.killAction();this.actionBusy=true;
+    this.actionTl=motionGSAP.timeline({onComplete:()=>{this.actionBusy=false;this.actionTl=null;this.startIdle();onComplete?.()}})
+      .to(this.sprite,{y:-112,rotation:-1.8,scaleY:1.02,duration:.34,ease:"power2.out"})
+      .to(this.sprite,{y:0,rotation:.7,scaleY:.985,duration:.34,ease:"power2.in"})
+      .to(this.sprite,{rotation:0,scaleY:1,duration:.14,ease:"back.out(1.6)"});
+    if(this.shadow){
+      motionGSAP.timeline().to(this.shadow,{scaleX:.62,scaleY:.62,opacity:.18,duration:.34,ease:"power2.out"})
+        .to(this.shadow,{scaleX:1,scaleY:1,opacity:.42,duration:.34,ease:"power2.in"});
+    }
+    return true;
+  }
+}
+function motionFor(el){
+  if(!motionGSAP||!el)return null;
+  let controller=auroraMotionControllers.get(el);
+  if(!controller){controller=new AuroraMotionController(el);auroraMotionControllers.set(el,controller)}
+  return controller;
+}
+function syncAuroraWalk(el,velocity,maxVelocity){
+  const controller=motionFor(el);if(!controller)return;
+  const ratio=Math.min(1,Math.abs(velocity)/(maxVelocity||1));
+  if(ratio>.035)controller.walk(.76+ratio*.70);else controller.stop();
+}
 function clearAuroraActions(el){
   if(!el)return;
   el.classList.remove("look-around","bend","study-object","reach-object","turning");
+  motionFor(el)?.killAction();
 }
 function pulseAuroraAction(el,action,duration=1200){
   if(!el)return;
   clearAuroraActions(el);
   el.classList.add(action);
+  if(motionFor(el)?.action(action,duration))return;
   window.setTimeout(()=>el.classList.remove(action),duration);
 }
 function setAuroraFacing(el,left){
   if(!el)return;
   const desired=left?"left":"right";
-  if(el.dataset.facing!==desired){
-    el.dataset.facing=desired;
-    el.classList.add("turning");
-    window.setTimeout(()=>el.classList.remove("turning"),240);
-  }
+  if(el.dataset.facing===desired){el.classList.toggle("face-left",left);return}
+  el.dataset.facing=desired;
+  const controller=motionFor(el);
+  if(controller){controller.turn(left);return}
+  el.classList.add("turning");
+  window.setTimeout(()=>el.classList.remove("turning"),240);
   el.classList.toggle("face-left",left);
 }
 function ambientAurora(el,moving){
@@ -384,6 +521,8 @@ $("jump").onclick=()=>{
  if(state.jumping)return;
  state.jumping=true;
  aurora.classList.add("jump");
+ const controller=motionFor(aurora);
+ if(controller && controller.jump(()=>{aurora.classList.remove("jump");state.jumping=false}))return;
  setTimeout(()=>{aurora.classList.remove("jump");state.jumping=false},820);
 };
 
@@ -538,6 +677,7 @@ function loop(t){
    }
    mainVelocity=0;
  }
+ syncAuroraWalk(aurora,mainVelocity,maxSpeed);
 
  state.x+=mainVelocity*dt;
  state.x=Math.max(60,Math.min(2180,state.x));
@@ -746,7 +886,7 @@ $("chamberInspect").onclick=()=>{
     treasureChest.classList.add("open");
     compassArtifact.classList.add("show");
     chamberGoal("Dokumenter funnet",4);
-    chamberSay("Kisten inneholder et gammelt kompass. Nålen peker ikke mot nord... Jeg fotograferer plasseringen før jeg løfter det ut.");
+    chamberSay("Kisten inneholder et gammelt kompass. Nålen peker ikke mot nord... Jeg dokumenterer plasseringen nøye før jeg løfter det ut.");
     return;
   }
   if(chamberStage===4 && !compassCollected){
@@ -786,12 +926,14 @@ $("closeJournal").onclick=()=>{
   setTimeout(()=>{
     setAuroraFacing(chamberAurora,true);
     chamberAurora.classList.add("walk");
+    motionFor(chamberAurora)?.walk(1.12);
     const exitWalk=setInterval(()=>{
       chamberX-=1.05;
       chamberAurora.style.left=chamberX+"%";
       if(chamberX<=6){
         clearInterval(exitWalk);
         chamberAurora.classList.remove("walk");
+        motionFor(chamberAurora)?.stop();
         chamberExitFade.classList.add("active");
         setTimeout(()=>startDesertScene(),1250);
       }
@@ -835,6 +977,7 @@ function chamberLoop(){
     chamberX+=chamberVelocity;
     chamberX=Math.max(4,Math.min(83,chamberX));
     chamberAurora.style.left=chamberX+"%";
+    syncAuroraWalk(chamberAurora,chamberVelocity,.56);
     ambientAurora(chamberAurora,accelerating||Math.abs(chamberVelocity)>.025);
   }
   requestAnimationFrame(chamberLoop);
@@ -882,10 +1025,21 @@ $("desertInspect").onclick=()=>{
 
 const endingClose=$("endingClose");
 endingClose?.addEventListener("click",()=>{
+  const worldMap=$("worldMap");
   chapterComplete.classList.add("hidden");
   chapterComplete.classList.remove("ending-photo");
   desert.classList.remove("ending-mode");
-  desertSay("Funnet er sikret. Jeg tar en siste kontroll før jeg vender tilbake til leiren.");
+  show(worldMap);
+  if(motionGSAP){
+    motionGSAP.fromTo(".world-map-panel",{y:28,opacity:0},{y:0,opacity:1,duration:.55,ease:"power3.out"});
+    motionGSAP.fromTo(".world-map-route i",{opacity:.15,scale:.7},{opacity:1,scale:1.25,duration:.45,stagger:.12,repeat:1,yoyo:true,ease:"sine.inOut"});
+  }
+});
+
+const mycenaeNext=$("mycenaeNext"),mapNotice=$("mapNotice");
+mycenaeNext?.addEventListener("click",()=>{
+  if(mapNotice)mapNotice.textContent="Mykene er låst opp. Neste ekspedisjon bygges som kapittel 2.";
+  if(motionGSAP)motionGSAP.fromTo(mycenaeNext,{scale:.985},{scale:1,duration:.32,ease:"back.out(2)"});
 });
 
 function desertLoop(){
@@ -908,11 +1062,12 @@ function desertLoop(){
     desertX+=desertVelocity;
     desertX=Math.max(7,Math.min(82,desertX));
     desertAurora.style.left=desertX+"%";
+    syncAuroraWalk(desertAurora,desertVelocity,.48);
     ambientAurora(desertAurora,desertLeft||desertRight||Math.abs(desertVelocity)>.02);
 
     if(desertX>70){
       $("desertObjective").textContent="Leiren er nådd";
-      desertSay("Først fotografier, målinger og konservering. Deretter kan vi planlegge reisen videre.");
+      desertSay("Først registrering, målinger og konservering. Deretter kan vi planlegge reisen videre.");
     }
   }
   requestAnimationFrame(desertLoop);

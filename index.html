@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="theme-color" content="#0b0704">
-<title>Arkeologens Reise 5.6.6 – clean visual fix</title>
+<title>Arkeologens Reise 5.7.0 – Aurora Motion</title>
 
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#050403">
@@ -11,10 +11,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Arkeologens Reise">
-  <link rel="manifest" href="manifest.webmanifest?v=5.6.6">
+  <link rel="manifest" href="manifest.webmanifest?v=5.7.0">
   <link rel="apple-touch-icon" href="icon-180.png">
 
-<link rel="stylesheet" href="style.css?v=5.6.6">
+<link rel="stylesheet" href="style.css?v=5.7.0">
 </head>
 <body>
 <main id="app">
@@ -257,8 +257,26 @@
         <small>KAPITTEL 1 FULLFØRT</small>
         <h2>Funnet er dokumentert</h2>
         <p>Aurora forlater den glemte graven med kompasset sikret for videre undersøkelser.</p>
-        <button type="button" id="endingClose">TILBAKE TIL ØRKENEN</button>
+        <button type="button" id="endingClose">TILBAKE TIL VERDENSKARTET</button>
       </div>
+    </div>
+  </section>
+
+
+  <section id="worldMap" class="screen world-map-screen" aria-label="Verdenskart">
+    <div class="world-map-bg" aria-hidden="true"></div>
+    <div class="world-map-shade" aria-hidden="true"></div>
+    <header class="world-map-hud">
+      <div><b>VERDENSKART</b><small>Aurora Vales ekspedisjoner</small></div>
+      <div class="world-map-status"><span class="done">✓ EGYPT FULLFØRT</span><span class="unlocked">MYKENE LÅST OPP</span></div>
+    </header>
+    <div class="world-map-route" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="world-map-panel">
+      <small>NESTE EKSPEDISJON</small>
+      <h2>Mykene</h2>
+      <p>Kompasset fra gravkammeret peker videre mot Hellas. Mykene er nå tilgjengelig som neste reisemål.</p>
+      <button type="button" id="mycenaeNext">MYKENE · LÅST OPP</button>
+      <div id="mapNotice" class="map-notice" aria-live="polite"></div>
     </div>
   </section>
 
@@ -285,6 +303,7 @@
   </section>
 
 </main>
-<script src="game.js?v=5.6.6"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="game.js?v=5.7.0"></script>
 </body>
 </html>
