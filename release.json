@@ -1,10 +1,10 @@
 {
   "name": "Arkeologens Reise",
-  "version": "5.7.0-aurora-motion",
+  "version": "5.8.0-aurora-articulated-rig",
   "entry": "index.html",
   "platform": "HTML5 / GitHub Pages",
   "prologue_scenes": 9,
-  "animation_engine": "GSAP 3.15.0 (CDN) with CSS fallback",
+  "animation_engine": "GSAP 3.15.0 (CDN) with articulated CSS fallback",
   "keep_in_github": ["mystisk_musikk.mp3"],
-  "notes": "v5.7.0 bygger på den låste v5.6.6-basen. Aurora får GSAP-styrt idle, gange, myk stopp, kroppsvending, se-seg-rundt, bøying, rekke-bevegelse og hopp. Kamera/fotografering er fjernet fra teksten inntil et kamera faktisk implementeres. Kapittel 1 avsluttes med TILBAKE TIL VERDENSKARTET; Egypt markeres fullført og Mykene låses opp."
+  "notes": "v5.8.0 bygger direkte på den godkjente v5.7.2-basen. Første store Aurora-løft: den godkjente karaktermodellen er delt i seks bevegelige lag (hode, torso, to armer, to bein), med separat idle, gange, stopp, vending, blikk, bøying, rekke-bevegelse og hopp. Feltdagbok-knappen er flyttet ut av Auroras hodeområde. Feltdagboken starter på 0/7 ved helt ny spillstart og fylles først når spilleren faktisk begynner ekspedisjonen. Brevteksten i scene 5/9 er oppdatert. Verdenskart og Egypt-flyt er beholdt fra v5.7.2."
 }
