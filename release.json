@@ -1,11 +1,11 @@
 {
   "name": "Arkeologens Reise",
-  "version": "5.6-basic",
+  "version": "5.6.1-ui-hotfix",
   "entry": "index.html",
   "platform": "HTML5 / GitHub Pages",
   "prologue_scenes": 9,
   "files": [
-    "README_V5_6_BASIC.txt",
+    "README_V5_6_1_UI_HOTFIX.txt",
     "aurora_character_v521.png",
     "aurora_face.jpg",
     "chapter1_ending.png",
@@ -33,5 +33,5 @@
   "keep_in_github": [
     "mystisk_musikk.mp3"
   ],
-  "notes": "v5.6 BASIC bygger på v5.5.5 FINAL. Aurora har mykere akselerasjon/brems, naturligere retningsskifte, idle-bevegelser, bøying/undersøkelse og bedre kompasshåndtering. Historie, 9-sceneprolog og gåteflyt er beholdt."
+  "notes": "v5.6.1 UI HOTFIX bygger på v5.6 BASIC. Fjerner debug-versjonsmarkøren som arvet right/bottom fra eldre CSS og derfor strakk seg som et ekstra gullrammet lag over spillflaten. Flytter også reset/musikk under dialogfeltet på iPhone i portrett."
 }

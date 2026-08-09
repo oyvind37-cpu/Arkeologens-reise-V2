@@ -2293,3 +2293,31 @@ button:disabled{cursor:default;}
     animation:none!important;
   }
 }
+
+/* =========================================================
+   v5.6.1 UI HOTFIX — iPhone/Safari
+   Fixes the accidental stretched debug build-marker and
+   keeps reset/music controls clear of Aurora's dialogue.
+   ========================================================= */
+#game .build-marker{
+  display:none!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  width:auto!important;
+  height:auto!important;
+  border:0!important;
+}
+
+@media (orientation:portrait) and (max-width:700px){
+  #game .reset-game,
+  #game .music-game{
+    top:calc(184px + env(safe-area-inset-top))!important;
+    width:42px!important;
+    height:42px!important;
+    z-index:126!important;
+  }
+  #game .reset-game{right:62px!important;}
+  #game .music-game{right:12px!important;}
+}
