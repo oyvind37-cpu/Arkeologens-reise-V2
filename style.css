@@ -2653,3 +2653,16 @@ button:disabled{cursor:default;}
 @media (orientation:portrait) and (max-width:390px){
   #chamber #treasureChest.treasure-chest{left:65%!important;width:124px!important;height:86px!important}
 }
+
+
+/* =========================================================
+   v5.6.4 – SAFARI / GODKJENT OSLO-LUFTHAVN-SCENE
+   ========================================================= */
+#prologue .prologue-copy h2:empty{display:none!important;}
+@media (max-width:700px){
+  /* Fullskjermvalget hører hjemme før spilldelen, ikke oppå ørkenscenen. */
+  body:has(#game.active) .fullscreen-btn,
+  body:has(#chamber.active) .fullscreen-btn,
+  body:has(#desert.active) .fullscreen-btn,
+  body:has(#journal.active) .fullscreen-btn{display:none!important;}
+}

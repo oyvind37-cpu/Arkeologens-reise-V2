@@ -221,8 +221,8 @@ const prologueScenes=[
   },
   {
     kicker:"OSLO LUFTHAVN · NESTE MORGEN",
-    title:"Noen følger etter",
-    video:"prologue_06_shadow.mp4",
+    title:"",
+    video:"prologue_06_shadow_v564.mp4",
     text:"Aurora merker ingenting. En mann holder avstand og følger henne med blikket. Ansiktet forblir skjult. Når hun går mot gaten, løfter han telefonen: «Hun dro.»"
   },
   {

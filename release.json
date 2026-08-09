@@ -1,38 +1,9 @@
 {
   "name": "Arkeologens Reise",
-  "version": "5.6.3-gravkammer-storyflow",
+  "version": "5.6.4-safari-intro-fix",
   "entry": "index.html",
   "platform": "HTML5 / GitHub Pages",
   "prologue_scenes": 9,
-  "files": [
-    "README_V5_6_3_GRAVKAMMER_STORYFLOW.txt",
-    "aurora_character_v521.png",
-    "aurora_face.jpg",
-    "chapter1_ending.png",
-    "compass_v521.png",
-    "desert_environment.jpg",
-    "game.js",
-    "gravkammer_v562.png",
-    "icon-180.png",
-    "icon-512.png",
-    "index.html",
-    "intro.png",
-    "manifest.webmanifest",
-    "prologue_01_cinema.mp4",
-    "prologue_02_cinema.mp4",
-    "prologue_03_cinema.mp4",
-    "prologue_04_cinema.mp4",
-    "prologue_05_v537.mp4",
-    "prologue_05_warning.mp4",
-    "prologue_06_shadow.mp4",
-    "prologue_06_v538.mp4",
-    "prologue_07_cinema.mp4",
-    "release.json",
-    "style.css",
-    "temple.jpg"
-  ],
-  "keep_in_github": [
-    "mystisk_musikk.mp3"
-  ],
-  "notes": "v5.6.3 gjør Det tapte gravkammeret dramaturgisk riktig: Aurora oppdager innskriften først, gåtepanelet aktiveres etter undersøkelse, ingen forhåndskjent fysisk vokter, portalen avdekker et eget innerste kammer, og gullkisten er skjult til korrekt symbolsekvens er løst. Kisten er også visuelt oppgradert."
+  "keep_in_github": ["mystisk_musikk.mp3"],
+  "notes": "v5.6.4 beholder storyflowen fra v5.6.3, retter Oslo-lufthavn-scenen i introen, fjerner ordet 'Helst', fjerner den overflødige tittelen 'Noen følger etter', bruker nytt videofilnavn for å omgå Safari-cache, og skjuler fullskjermknappen over selve spillscenene på iPhone."
 }
