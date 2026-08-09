@@ -2321,3 +2321,198 @@ button:disabled{cursor:default;}
   #game .reset-game{right:62px!important;}
   #game .music-game{right:12px!important;}
 }
+
+/* =========================================================
+   v5.6.2 – DET TAPTE GRAVKAMMERET / REALISM UPGRADE
+   Sceneplan: arkitektur -> dialog -> integrert gåte -> utforskning.
+   ========================================================= */
+#chamber .chamber-realism-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    linear-gradient(to bottom,rgba(5,3,2,.08),rgba(5,3,2,.22) 58%,rgba(5,3,2,.5)),
+    url("gravkammer_v562.png?v=5.6.2") center 54%/cover no-repeat;
+  filter:brightness(1.04) saturate(.92) contrast(1.04);
+  transform:scale(1.015);
+}
+#chamber .chamber-realism-bg::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 46%,transparent 20%,rgba(0,0,0,.18) 58%,rgba(0,0,0,.66) 100%),
+    linear-gradient(to bottom,rgba(7,4,2,.18),transparent 24%,transparent 75%,rgba(7,4,2,.4));
+}
+
+/* The old prototype wall pieces remain in HTML for compatibility, but the
+   v5.6.2 scene uses the richer architectural artwork instead. */
+#chamber .chamber-ceiling,
+#chamber .chamber-wall,
+#chamber .chamber-floor,
+#chamber .chamber-column,
+#chamber > .anubis,
+#chamber .chamber-camera > .anubis,
+#chamber .light-shaft{opacity:0!important;pointer-events:none!important}
+
+#chamber .floating-gold{position:absolute;inset:0;z-index:6;pointer-events:none}
+#chamber .floating-gold:before,#chamber .floating-gold:after{opacity:.55}
+
+/* Animated side atmosphere: braziers, guardians and pottery. */
+#chamber .chamber-ambience{position:absolute;inset:0;z-index:8;pointer-events:none}
+#chamber .tomb-torch{position:absolute;top:55%;width:22px;height:88px;filter:drop-shadow(0 0 9px rgba(255,166,48,.62))}
+#chamber .torch-left{left:23%} #chamber .torch-right{right:23%}
+#chamber .tomb-torch::before{content:"";position:absolute;left:7px;bottom:0;width:8px;height:58px;border-radius:4px;background:linear-gradient(#8b6038,#3d2616)}
+#chamber .tomb-torch i{position:absolute;left:-12px;top:-21px;width:46px;height:58px;border-radius:55% 45% 58% 42%;background:radial-gradient(circle at 50% 65%,#fff0a3 0 10%,#ffc14a 24%,#db681e 50%,rgba(219,104,30,.08) 72%,transparent 74%);animation:tombFlame562 .72s ease-in-out infinite alternate;transform-origin:50% 100%}
+#chamber .guardian{position:absolute;bottom:18%;width:54px;height:135px;color:#17100b;text-shadow:0 0 3px #9b6d3d;font-size:5.2rem;opacity:.78;filter:drop-shadow(0 12px 9px rgba(0,0,0,.7))}
+#chamber .guardian-left{left:11%} #chamber .guardian-right{right:11%;transform:scaleX(-1)}
+#chamber .urns{position:absolute;bottom:16%;display:flex;align-items:flex-end;gap:3px;opacity:.88}
+#chamber .urns-left{left:5%} #chamber .urns-right{right:5%}
+#chamber .urns i{display:block;width:17px;height:31px;border:2px solid #8b5f32;border-radius:45% 45% 24% 24%;background:linear-gradient(90deg,#2c1b10,#704925,#28180e);box-shadow:inset 0 0 6px #0b0704}
+#chamber .urns i:nth-child(2){height:42px;width:21px} #chamber .urns i:nth-child(3){height:25px;width:14px}
+@keyframes tombFlame562{from{transform:scale(.92,.98) rotate(-2deg);filter:brightness(.94)}to{transform:scale(1.06,1.04) rotate(2deg);filter:brightness(1.15)}}
+
+/* Monumental portal replaces the old flat sarcophagus while retaining its id
+   so the established puzzle logic stays stable. */
+#chamber #sarcophagus.central-portal{
+  position:absolute!important;left:50%!important;top:19%!important;bottom:auto!important;
+  width:min(280px,45%)!important;height:58%!important;min-height:250px!important;
+  transform:translateX(-50%)!important;border:0!important;border-radius:0!important;
+  background:none!important;box-shadow:none!important;z-index:21!important;opacity:1!important;
+  transition:none!important;pointer-events:none;
+}
+#chamber .portal-frame{
+  position:absolute;left:7%;right:7%;top:13%;bottom:4%;overflow:hidden;
+  border:clamp(7px,1.6vw,13px) solid #785127;border-radius:6px 6px 24px 24px;
+  background:#120c08;
+  box-shadow:0 0 0 3px rgba(196,139,68,.35),0 18px 24px rgba(0,0,0,.72),inset 0 0 30px #000;
+}
+#chamber .portal-frame::before{
+  content:"";position:absolute;inset:-3px;z-index:5;pointer-events:none;
+  border:2px solid rgba(214,163,86,.35);
+  background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(206,149,74,.08) 22px 24px);
+}
+#chamber .portal-crown{position:absolute;left:0;right:0;top:1%;height:20%;z-index:7}
+#chamber .portal-crown::before,#chamber .portal-crown::after{content:"";position:absolute;top:34%;width:44%;height:22%;border-top:3px solid rgba(208,154,79,.72);border-bottom:2px solid rgba(131,88,43,.62)}
+#chamber .portal-crown::before{left:3%;transform:skewY(-10deg)} #chamber .portal-crown::after{right:3%;transform:skewY(10deg)}
+#chamber .portal-crown span{position:absolute;left:50%;top:21%;width:34px;height:34px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,#f0c969 0 27%,#a56923 30% 56%,#422715 60%);box-shadow:0 0 18px rgba(230,172,74,.44)}
+#chamber .portal-door{position:absolute;top:0;bottom:0;width:50%;z-index:2;background:linear-gradient(90deg,#2c1d13,#614124 48%,#2a1a10);border-color:#8a5d31;border-style:solid;transition:transform 1.05s cubic-bezier(.2,.75,.25,1),filter 1s;box-shadow:inset 0 0 18px rgba(0,0,0,.85)}
+#chamber .portal-door::after{content:"";position:absolute;inset:7% 16%;border:1px solid rgba(208,150,75,.3);background:repeating-linear-gradient(0deg,transparent 0 22px,rgba(205,149,78,.09) 22px 24px)}
+#chamber .portal-door-left{left:0;border-width:0 2px 0 0} #chamber .portal-door-right{right:0;border-width:0 0 0 2px}
+#chamber #sarcophagus .sarcophagus-face{position:absolute;z-index:8;left:50%;top:49%;transform:translate(-50%,-50%);margin:0!important;color:#b9813d!important;font-size:clamp(3rem,10vw,5rem)!important;text-shadow:0 0 12px rgba(232,181,85,.28),0 5px 7px #000;transition:opacity .45s,transform .65s}
+#chamber .portal-seam{position:absolute;z-index:7;left:50%;top:0;bottom:0;width:2px;transform:translateX(-50%);background:linear-gradient(transparent,#e4b75e 22%,#e4b75e 78%,transparent);box-shadow:0 0 13px rgba(230,184,89,.4);transition:opacity .5s}
+#chamber .portal-threshold{position:absolute;left:13%;right:13%;bottom:0;height:8%;background:linear-gradient(#7a5029,#352013);clip-path:polygon(7% 0,93% 0,100% 100%,0 100%);box-shadow:0 7px 10px rgba(0,0,0,.6)}
+#chamber #sarcophagus.open .portal-door-left{transform:translateX(-92%);filter:brightness(.72)}
+#chamber #sarcophagus.open .portal-door-right{transform:translateX(92%);filter:brightness(.72)}
+#chamber #sarcophagus.open .portal-seam,#chamber #sarcophagus.open .sarcophagus-face{opacity:0;transform:translate(-50%,-50%) scale(.85)}
+#chamber #sarcophagus.open .portal-frame{box-shadow:0 0 0 3px rgba(196,139,68,.35),0 18px 24px rgba(0,0,0,.72),inset 0 0 28px #000,0 0 24px rgba(226,166,67,.25)}
+
+/* Puzzle is carved into the architecture instead of floating like a modal. */
+#chamber #symbolPuzzle.symbol-puzzle{
+  top:7%!important;width:min(330px,68%)!important;padding:8px 10px 9px!important;
+  border:2px solid #9c6d36!important;border-radius:7px!important;
+  background:linear-gradient(rgba(41,27,17,.94),rgba(17,11,7,.95))!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.55),inset 0 0 0 2px rgba(206,153,77,.13)!important;
+  z-index:44!important;
+}
+#chamber #symbolPuzzle::before,#chamber #symbolPuzzle::after{content:"";position:absolute;top:18px;width:36px;height:2px;background:#8f6535;opacity:.65}
+#chamber #symbolPuzzle::before{left:-30px} #chamber #symbolPuzzle::after{right:-30px}
+#chamber #symbolPuzzle h3{font-size:.88rem!important;letter-spacing:.05em!important;color:#e9c16f!important}
+#chamber #symbolPuzzle p{font-size:.68rem!important;margin:.15rem 0 .38rem!important;color:#cdb58d!important}
+#chamber #symbolPuzzle>div{display:flex;justify-content:center;gap:8px}
+#chamber #symbolPuzzle button{width:62px!important;height:53px!important;margin:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important;border-radius:7px!important;background:linear-gradient(#312015,#1b110b)!important;border:1px solid #aa7840!important;color:#edc56f!important;box-shadow:inset 0 0 8px rgba(0,0,0,.65)}
+#chamber #symbolPuzzle button span{font-size:1.45rem;line-height:1}
+#chamber #symbolPuzzle button small{display:block;font-size:.48rem;letter-spacing:.08em;color:#d5b06c}
+#chamber #symbolPuzzle button.selected{background:linear-gradient(#7c5d2d,#3a2815)!important;box-shadow:0 0 18px rgba(237,190,84,.42),inset 0 0 8px rgba(0,0,0,.45)!important}
+#chamber #symbolPuzzle.solved{opacity:.42!important;filter:saturate(.55);pointer-events:none!important}
+
+/* Chest belongs behind/through the portal and reads as a physical find. */
+#chamber #treasureChest.treasure-chest{bottom:16%!important;width:126px!important;height:82px!important;z-index:28!important}
+#chamber .treasure-lid{border-radius:16px 16px 4px 4px!important;border-width:3px!important;background:linear-gradient(#b7802d,#5d3b13)!important}
+#chamber .treasure-box{border-width:3px!important;background:linear-gradient(90deg,#4a2d0e,#b27b24,#452a0d)!important}
+#chamber .treasure-glow{opacity:.56;filter:blur(2px)}
+
+/* Archaeological BLIKK: reveal selected reliefs and the portal without solving it. */
+#chamber.insight-active .chamber-realism-bg{filter:brightness(.96) saturate(.92) contrast(1.08)}
+#chamber.insight-active #symbolPuzzle{box-shadow:0 0 28px rgba(236,190,91,.4),inset 0 0 0 2px rgba(206,153,77,.2)!important}
+#chamber.insight-active #sarcophagus{filter:drop-shadow(0 0 14px rgba(226,176,80,.32))}
+
+#chamber #chamberAurora.chamber-hop{animation:chamberHop562 .62s cubic-bezier(.2,.7,.35,1)!important}
+@keyframes chamberHop562{0%,100%{transform:translateY(0)}42%{transform:translateY(-17px)}68%{transform:translateY(-6px)}}
+
+/* Keep Aurora low in the room to communicate scale. */
+#chamber #chamberAurora{bottom:14%!important;z-index:70!important}
+#chamber #chamberAurora .aurora-character-sprite{filter:brightness(.88) sepia(.08) drop-shadow(0 7px 5px rgba(0,0,0,.62))}
+
+/* Two-tier controls from the approved scene drawing. */
+#chamber .chamber-controls{display:flex!important;flex-direction:column!important;height:auto!important;gap:7px!important}
+#chamber .chamber-control-row{display:grid;grid-template-columns:1fr 1fr 1.05fr 1.05fr;gap:7px;height:50px}
+#chamber .chamber-control-row button{height:50px!important;min-height:50px!important;padding:0 4px!important}
+#chamber .chamber-tool{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:0!important;font-size:1.25rem!important;line-height:1!important}
+#chamber .chamber-tool small{display:block;font-size:.48rem;letter-spacing:.05em;margin-top:2px;color:#ecd5aa}
+#chamber #chamberInspect{height:56px!important;min-height:56px!important;font-size:1rem!important;font-weight:900!important;letter-spacing:.025em!important}
+
+@media (orientation:portrait) and (max-width:700px){
+  #chamber .chamber-camera{top:calc(178px + env(safe-area-inset-top))!important;bottom:calc(142px + env(safe-area-inset-bottom))!important}
+  #chamber .chamber-controls{left:10px!important;right:10px!important;bottom:calc(8px + env(safe-area-inset-bottom))!important;z-index:160!important}
+  #chamber #sarcophagus.central-portal{top:21%!important;width:52%!important;height:61%!important}
+  #chamber #symbolPuzzle.symbol-puzzle{top:5%!important;width:74%!important}
+  #chamber .tomb-torch{top:55%!important}
+  #chamber .guardian{bottom:14%!important;font-size:4.4rem!important}
+  #chamber .urns{bottom:12%!important}
+  #chamber #treasureChest.treasure-chest{bottom:12%!important}
+  #chamber #compassArtifact.compass-artifact{bottom:34%!important}
+}
+
+@media (orientation:portrait) and (max-width:390px){
+  #chamber #symbolPuzzle.symbol-puzzle{width:78%!important;padding-left:7px!important;padding-right:7px!important}
+  #chamber #symbolPuzzle button{width:56px!important;height:50px!important}
+  #chamber #sarcophagus.central-portal{width:55%!important}
+  #chamber .guardian-left{left:7%!important} #chamber .guardian-right{right:7%!important}
+}
+
+@media (orientation:landscape) and (max-height:650px){
+  #chamber .chamber-realism-bg{background-position:center 57%}
+  #chamber #sarcophagus.central-portal{top:17%!important;height:65%!important;width:31%!important}
+  #chamber #symbolPuzzle.symbol-puzzle{top:8%!important;width:42%!important}
+  #chamber .chamber-controls{display:grid!important;grid-template-columns:2fr 1fr!important;align-items:end!important}
+  #chamber .chamber-control-row{height:48px}
+  #chamber #chamberInspect{height:48px!important;min-height:48px!important}
+}
+#chamber .chamber-camera{position:absolute!important}
+
+/* v5.6.2 final visual pass: use the approved scene-plan artwork as the
+   realistic room plate, while all gameplay elements stay live above it. */
+#chamber .chamber-realism-bg{
+  background:
+    linear-gradient(to bottom,rgba(6,4,2,.08),rgba(6,4,2,.12) 58%,rgba(6,4,2,.34)),
+    url("gravkammer_v562.png?v=5.6.2") center center/cover no-repeat!important;
+  filter:brightness(.94) saturate(.92) contrast(1.03)!important;
+  transform:scale(1.01)!important;
+}
+/* The realistic room plate already contains side architecture/props. */
+#chamber .chamber-ambience{display:none!important}
+
+/* Closed state is supplied by the realistic background. When the player
+   solves the sequence, this element becomes a dark open doorway over it. */
+#chamber #sarcophagus.central-portal{
+  left:41.5%!important;top:7.5%!important;width:45%!important;height:64%!important;
+  opacity:0!important;filter:none!important;z-index:25!important;
+}
+#chamber #sarcophagus.central-portal .portal-crown,
+#chamber #sarcophagus.central-portal .portal-door,
+#chamber #sarcophagus.central-portal .portal-seam,
+#chamber #sarcophagus.central-portal .sarcophagus-face,
+#chamber #sarcophagus.central-portal .portal-threshold{display:none!important}
+#chamber #sarcophagus.central-portal .portal-frame{
+  position:absolute!important;inset:0!important;border:2px solid rgba(208,154,79,.62)!important;
+  border-radius:48% 48% 5% 5% / 16% 16% 4% 4%!important;
+  background:radial-gradient(ellipse at 50% 78%,rgba(99,58,24,.22),rgba(8,5,3,.96) 58%,#020101 100%)!important;
+  box-shadow:inset 0 0 32px #000,0 0 22px rgba(224,166,71,.24)!important;
+}
+#chamber #sarcophagus.central-portal.open{opacity:1!important;animation:portalReveal562 .8s ease both}
+@keyframes portalReveal562{from{opacity:0;filter:brightness(1.8)}to{opacity:1;filter:brightness(1)}}
+
+/* Keep the puzzle on the lintel above the physical doorway. */
+#chamber #symbolPuzzle.symbol-puzzle{top:2.5%!important;width:min(330px,72%)!important}
+
+@media (orientation:portrait) and (max-width:700px){
+  #chamber #sarcophagus.central-portal{left:41.5%!important;top:7.5%!important;width:46%!important;height:64%!important}
+  #chamber #symbolPuzzle.symbol-puzzle{top:2%!important;width:76%!important}
+}

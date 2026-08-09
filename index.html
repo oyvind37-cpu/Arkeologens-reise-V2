@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="theme-color" content="#0b0704">
-<title>Arkeologens Reise 5.6.1 UI HOTFIX</title>
+<title>Arkeologens Reise 5.6.2 – Det tapte gravkammeret</title>
 
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#050403">
@@ -11,10 +11,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Arkeologens Reise">
-  <link rel="manifest" href="manifest.webmanifest?v=5.6.1-hotfix">
+  <link rel="manifest" href="manifest.webmanifest?v=5.6.2">
   <link rel="apple-touch-icon" href="icon-180.png">
 
-<link rel="stylesheet" href="style.css?v=5.6.1-hotfix">
+<link rel="stylesheet" href="style.css?v=5.6.2">
 </head>
 <body>
 
@@ -114,7 +114,7 @@
 
     <div id="nearHint" class="near-hint hidden">UNDERSØK HORUS-ØYET</div>
     <div id="inventoryBadge" class="inventory-badge hidden">✓ DET TAPTE KOMPASSET</div>
-    <button type="button" id="enterChamberBtn" class="enter-chamber hidden">GÅ INN I SKATTEKAMMERET</button>
+    <button type="button" id="enterChamberBtn" class="enter-chamber hidden">GÅ INN I GRAVKAMMERET</button>
 
     <div class="controls">
       <div><button type="button" id="left">◀</button><button type="button" id="right">▶</button></div>
@@ -124,6 +124,7 @@
 
   <section id="chamber" class="screen chamber-screen">
     <div id="chamberCamera" class="chamber-camera">
+    <div class="chamber-realism-bg" aria-hidden="true"></div>
     <div class="chamber-ceiling"></div>
     <div id="innerDoor" class="inner-door">
       <div class="inner-door-panel left-panel"></div>
@@ -142,18 +143,33 @@
     <div class="anubis anubis-right">𓁢</div>
     <div class="light-shaft"></div>
     <div class="floating-gold"></div>
+    <div class="chamber-ambience" aria-hidden="true">
+      <div class="tomb-torch torch-left"><i></i></div>
+      <div class="tomb-torch torch-right"><i></i></div>
+      <div class="guardian guardian-left"><span>𓁢</span></div>
+      <div class="guardian guardian-right"><span>𓁢</span></div>
+      <div class="urns urns-left"><i></i><i></i><i></i></div>
+      <div class="urns urns-right"><i></i><i></i><i></i></div>
+    </div>
 
-    <div id="sarcophagus" class="sarcophagus">
-      <div class="sarcophagus-face">𓁹</div>
+    <div id="sarcophagus" class="sarcophagus central-portal" aria-label="Forseglet portal i gravkammeret">
+      <div class="portal-crown"><span></span></div>
+      <div class="portal-frame">
+        <div class="portal-door portal-door-left"></div>
+        <div class="portal-door portal-door-right"></div>
+        <div class="sarcophagus-face">𓂀</div>
+        <div class="portal-seam"></div>
+      </div>
+      <div class="portal-threshold"></div>
     </div>
 
     <div id="symbolPuzzle" class="symbol-puzzle">
       <h3>VOKTERNES REKKEFØLGE</h3>
       <p>Hieroglyfene viser veien</p>
       <div>
-        <button type="button" data-glyph="sun">☀</button>
-        <button type="button" data-glyph="eye">𓂀</button>
-        <button type="button" data-glyph="ankh">☥</button>
+        <button type="button" data-glyph="sun"><span>☀</span><small>SOL</small></button>
+        <button type="button" data-glyph="eye"><span>𓂀</span><small>ØYE</small></button>
+        <button type="button" data-glyph="ankh"><span>☥</span><small>ANKH</small></button>
       </div>
     </div>
 
@@ -178,7 +194,7 @@
     </div>
     <div id="transitionFade" class="transition-fade hidden"></div>
     <div class="chamber-hud">
-      <div><b>DET TAPTE SKATTEKAMMERET</b><small>Forseglet i over 3000 år</small></div>
+      <div><b>DET TAPTE GRAVKAMMERET</b><small>Forseglet i over 3000 år</small></div>
       <div><b id="chamberObjective">Undersøk hieroglyfene</b><small id="chamberProgress">1 / 3</small></div>
     </div>
 
@@ -188,8 +204,12 @@
     </div>
 
     <div class="chamber-controls">
-      <button type="button" id="chamberLeft">◀</button>
-      <button type="button" id="chamberRight">▶</button>
+      <div class="chamber-control-row">
+        <button type="button" id="chamberLeft" aria-label="Gå til venstre">◀</button>
+        <button type="button" id="chamberRight" aria-label="Gå til høyre">▶</button>
+        <button type="button" id="chamberVision" class="chamber-tool" aria-label="Arkeologisk blikk">◉<small>BLIKK</small></button>
+        <button type="button" id="chamberJump" class="chamber-tool" aria-label="Hopp">↥<small>HOPP</small></button>
+      </div>
       <button type="button" id="chamberInspect">UNDERSØK</button>
     </div>
   </section>
@@ -263,6 +283,6 @@
   </section>
 
 </main>
-<script src="game.js?v=5.6.1-hotfix"></script>
+<script src="game.js?v=5.6.2"></script>
 </body>
 </html>

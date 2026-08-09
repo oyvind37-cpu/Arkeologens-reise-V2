@@ -467,7 +467,7 @@ $("interact").onclick=()=>{
  }
 
  if(state.stage===3){
-   say("Inngangen er åpen. Trykk GÅ INN I SKATTEKAMMERET.");
+   say("Inngangen er åpen. Trykk GÅ INN I GRAVKAMMERET.");
  }
 };
 
@@ -569,7 +569,7 @@ function loop(t){
  requestAnimationFrame(loop);
 }
 
-/* ---------- GRAVKAMMER · v5.6 BASIC ---------- */
+/* ---------- DET TAPTE GRAVKAMMERET · v5.6.2 ---------- */
 const chamber=$("chamber"),journal=$("journal"),desert=$("desert"),chamberAurora=$("chamberAurora"),chamberCamera=$("chamberCamera"),innerDoor=$("innerDoor"),cinematicBars=$("cinematicBars"),transitionFade=$("transitionFade"),chamberExitFade=$("chamberExitFade"),inventoryBadge=$("inventoryBadge");
 const chamberText=$("chamberDialogText"),chamberObjective=$("chamberObjective"),chamberProgress=$("chamberProgress");
 const sarcophagus=$("sarcophagus"),symbolPuzzle=$("symbolPuzzle"),treasureChest=$("treasureChest"),compassArtifact=$("compassArtifact");
@@ -608,6 +608,7 @@ enterChamberBtn.onclick=()=>{
     symbolPuzzle.classList.remove("solved");
     symbolPuzzle.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
     sarcophagus.classList.remove("open");
+    chamber.classList.remove("insight-active");
     treasureChest.classList.remove("revealed","open");
     compassArtifact.classList.remove("show","collected");
   if(compassCollected){compassArtifact.style.display="none";}else{compassArtifact.style.display="block";}
@@ -643,6 +644,29 @@ function chamberHold(id,key){
 chamberHold("chamberLeft","left");
 chamberHold("chamberRight","right");
 
+/* v5.6.2: BLIKK highlights architectural clues without solving the puzzle for the player. */
+$("chamberVision").onclick=()=>{
+  chamber.classList.add("insight-active");
+  pulseAuroraAction(chamberAurora,"look-around",1250);
+  if(chamberStage===0){
+    chamberSay("Se på portalen: symbolene er hugget inn som en del av arkitekturen. Jeg bør undersøke dem nærmere.");
+  }else if(chamberStage===1){
+    chamberSay("Tre tegn går igjen i relieffene: solskiven, Horus-øyet og ankh-tegnet.");
+  }else{
+    chamberSay("Lyset faller annerledes gjennom den åpne portalen. Kisten der inne er ikke tilfeldig plassert.");
+  }
+  setTimeout(()=>chamber.classList.remove("insight-active"),1500);
+};
+
+/* HOPP remains available as a tactile movement action, but is kept subtle indoors. */
+$("chamberJump").onclick=()=>{
+  if(chamberStage===3 && !compassCollected)return;
+  chamberAurora.classList.remove("chamber-hop");
+  void chamberAurora.offsetWidth;
+  chamberAurora.classList.add("chamber-hop");
+  setTimeout(()=>chamberAurora.classList.remove("chamber-hop"),620);
+};
+
 symbolPuzzle.querySelectorAll("button").forEach(button=>{
   button.onclick=()=>{
     if(chamberStage!==1)return;
@@ -655,7 +679,7 @@ symbolPuzzle.querySelectorAll("button").forEach(button=>{
         sarcophagus.classList.add("open");
         treasureChest.classList.add("revealed");
         chamberGoal("Undersøk gullkisten",3);
-        chamberSay("Sol, øye og liv. Sarkofagen skjulte en ny sokkel... og en gullkiste.");
+        chamberSay("Sol, øye og liv. Den forseglede portalen åpner seg... og avslører en gammel gullkiste.");
       }else{
         chamberSay("Rekkefølgen er feil. Les veggen fra soloppgang mot livstegnet.");
         glyphs=[];

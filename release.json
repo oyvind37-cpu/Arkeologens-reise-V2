@@ -1,17 +1,18 @@
 {
   "name": "Arkeologens Reise",
-  "version": "5.6.1-ui-hotfix",
+  "version": "5.6.2-gravkammer-realism",
   "entry": "index.html",
   "platform": "HTML5 / GitHub Pages",
   "prologue_scenes": 9,
   "files": [
-    "README_V5_6_1_UI_HOTFIX.txt",
+    "README_V5_6_2_GRAVKAMMER_REALISM.txt",
     "aurora_character_v521.png",
     "aurora_face.jpg",
     "chapter1_ending.png",
     "compass_v521.png",
     "desert_environment.jpg",
     "game.js",
+    "gravkammer_v562.png",
     "icon-180.png",
     "icon-512.png",
     "index.html",
@@ -33,5 +34,5 @@
   "keep_in_github": [
     "mystisk_musikk.mp3"
   ],
-  "notes": "v5.6.1 UI HOTFIX bygger på v5.6 BASIC. Fjerner debug-versjonsmarkøren som arvet right/bottom fra eldre CSS og derfor strakk seg som et ekstra gullrammet lag over spillflaten. Flytter også reset/musikk under dialogfeltet på iPhone i portrett."
+  "notes": "v5.6.2 bygger Det tapte gravkammeret etter godkjent sceneplan: rikere egyptisk arkitektur, portal integrert med gåtepanelet, søyler/statuer/urner/fakler, mer dybde og gulllys, BLIKK/HOPP i kammeret og ryddigere to-raders mobilkontroller. Beholder v5.6.1 UI-hotfix og eksisterende progresjon/kompasslogikk."
 }
