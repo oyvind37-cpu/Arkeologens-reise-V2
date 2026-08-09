@@ -1,10 +1,10 @@
 {
   "name": "Arkeologens Reise",
-  "version": "5.8.0-aurora-articulated-rig",
+  "version": "5.8.1-aurora-cohesive-motion-plus-3d-rig-lab",
   "entry": "index.html",
   "platform": "HTML5 / GitHub Pages",
   "prologue_scenes": 9,
-  "animation_engine": "GSAP 3.15.0 (CDN) with articulated CSS fallback",
+  "animation_engine": "CSS keyframes for production character + standalone native WebGL Aurora Rig Lab",
   "keep_in_github": ["mystisk_musikk.mp3"],
-  "notes": "v5.8.0 bygger direkte på den godkjente v5.7.2-basen. Første store Aurora-løft: den godkjente karaktermodellen er delt i seks bevegelige lag (hode, torso, to armer, to bein), med separat idle, gange, stopp, vending, blikk, bøying, rekke-bevegelse og hopp. Feltdagbok-knappen er flyttet ut av Auroras hodeområde. Feltdagboken starter på 0/7 ved helt ny spillstart og fylles først når spilleren faktisk begynner ekspedisjonen. Brevteksten i scene 5/9 er oppdatert. Verdenskart og Egypt-flyt er beholdt fra v5.7.2."
+  "notes": "v5.8.1 corrects the marionette effect from v5.8.0: smaller limb travel, whole-body BLIKK, corrected character aspect ratio in the tomb, and gentler stops/turns. A separate aurora_rig_lab.html is included for 360-degree 3D body work, forward/backward gait, joint inspection and future Aurora development. The 3D figure is currently a procedural rig mannequin, not the final photorealistic Aurora mesh."
 }

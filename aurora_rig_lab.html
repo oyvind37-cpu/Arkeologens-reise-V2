@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#090603">
+<title>Aurora Vale – 3D Rig Lab v5.8.1</title>
+<link rel="stylesheet" href="aurora_rig_lab.css?v=581">
+</head>
+<body>
+<main class="lab-shell">
+  <header class="lab-header">
+    <div>
+      <small>ARKEOLOGENS REISE · v5.8.1</small>
+      <h1>Aurora Vale · 3D Rig Lab</h1>
+      <p>Separat arbeidsrom for kropp, 360° rotasjon og naturlig bevegelse.</p>
+    </div>
+    <a href="index.html" class="back-link">TIL SPILLET</a>
+  </header>
+
+  <section class="viewport-card">
+    <canvas id="rigCanvas" aria-label="3D-modell av Aurora Vale"></canvas>
+    <div class="viewport-hud top-left">
+      <b id="motionLabel">IDLE</b>
+      <span id="angleLabel">0°</span>
+    </div>
+    <div class="viewport-hud top-right">
+      <span id="distanceLabel">0,0 m</span>
+    </div>
+    <div class="hint">Dra med fingeren for å snu Aurora 360°</div>
+    <aside id="referenceCard" class="reference-card hidden" aria-label="Godkjent 2D-referanse">
+      <img src="aurora_character_v521.png" alt="Godkjent Aurora Vale-referanse">
+      <span>GODKJENT 2D-REFERANSE</span>
+    </aside>
+  </section>
+
+  <section class="control-card">
+    <div class="button-grid">
+      <button id="walkForward" class="primary">▲ GÅ FREM</button>
+      <button id="walkBackward">▼ GÅ BAKOVER</button>
+      <button id="stopMotion">■ STOPP</button>
+      <button id="lookMotion">◉ BLIKK</button>
+    </div>
+
+    <label class="slider-row">
+      <span>ROTASJON <b id="yawValue">0°</b></span>
+      <input id="yawSlider" type="range" min="-180" max="180" value="0" step="1">
+    </label>
+    <label class="slider-row">
+      <span>GANGFART <b id="speedValue">0,85×</b></span>
+      <input id="speedSlider" type="range" min="45" max="125" value="85" step="1">
+    </label>
+
+    <div class="toggle-row">
+      <label><input id="bonesToggle" type="checkbox"> VIS LEDD</label>
+      <label><input id="referenceToggle" type="checkbox"> VIS 2D-REFERANSE</label>
+      <button id="resetRig" class="small">NULLSTILL</button>
+    </div>
+  </section>
+
+  <section class="note-card">
+    <b>RIGGSTATUS</b>
+    <p>Denne modellen er en teknisk 3D-mannequin laget for å få proporsjoner, ledd, vektforskyvning og gangsyklus riktig. Den er ikke den endelige fotorealistiske Aurora-meshen.</p>
+  </section>
+</main>
+<script src="aurora_rig_lab.js?v=581"></script>
+</body>
+</html>
