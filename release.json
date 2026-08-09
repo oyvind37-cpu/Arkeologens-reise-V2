@@ -1,13 +1,16 @@
 {
-  "name": "Arkeologens Reise v5.5.6",
-  "version": "5.5.6",
+  "name": "Arkeologens Reise",
+  "version": "5.6-basic",
   "entry": "index.html",
   "platform": "HTML5 / GitHub Pages",
   "prologue_scenes": 9,
   "files": [
+    "README_V5_6_BASIC.txt",
     "aurora_character_v521.png",
     "aurora_face.jpg",
+    "chapter1_ending.png",
     "compass_v521.png",
+    "desert_environment.jpg",
     "game.js",
     "icon-180.png",
     "icon-512.png",
@@ -30,6 +33,5 @@
   "keep_in_github": [
     "mystisk_musikk.mp3"
   ],
-  "notes": "Tutankhamon-inspirert gravkammer, fotorealistisk ørken, 4-veis dybdebevegelse for Aurora, kompass/kiste-lagdeling og Safari-layout.",
-  "channel": "fix"
+  "notes": "v5.6 BASIC bygger på v5.5.5 FINAL. Aurora har mykere akselerasjon/brems, naturligere retningsskifte, idle-bevegelser, bøying/undersøkelse og bedre kompasshåndtering. Historie, 9-sceneprolog og gåteflyt er beholdt."
 }

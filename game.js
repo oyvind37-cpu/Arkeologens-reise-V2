@@ -12,6 +12,48 @@ const plate=$("pressurePlate"),arrows=$("arrows"),eyeWall=$("eyeWall"),eyeGlow=$
 const door=$("door"),wow=$("wowLight"),nearHint=$("nearHint"),interact=$("interact"),enterChamberBtn=$("enterChamberBtn");
 const state={x:180,left:false,right:false,jumping:false,stage:0,vision:false,camera:0,idle:0,last:0,nearEye:false,eyeOpened:false,floorHintShown:false};
 
+/* ---------- AURORA MOTION SYSTEM v5.6 BASIC ----------
+   Keeps the approved v5.2.1 sprite, but makes movement and interaction
+   feel less "statue-like" without changing the game flow. */
+let mainVelocity=0;
+let nextAmbientMotion=performance.now()+4200;
+
+function clearAuroraActions(el){
+  if(!el)return;
+  el.classList.remove("look-around","bend","study-object","reach-object","turning");
+}
+function pulseAuroraAction(el,action,duration=1200){
+  if(!el)return;
+  clearAuroraActions(el);
+  el.classList.add(action);
+  window.setTimeout(()=>el.classList.remove(action),duration);
+}
+function setAuroraFacing(el,left){
+  if(!el)return;
+  const desired=left?"left":"right";
+  if(el.dataset.facing!==desired){
+    el.dataset.facing=desired;
+    el.classList.add("turning");
+    window.setTimeout(()=>el.classList.remove("turning"),240);
+  }
+  el.classList.toggle("face-left",left);
+}
+function ambientAurora(el,moving){
+  if(!el || moving)return;
+  const now=performance.now();
+  if(now<nextAmbientMotion)return;
+  if(el.classList.contains("bend") || el.classList.contains("study-object") ||
+     el.classList.contains("reach-object") || el.classList.contains("turning"))return;
+  pulseAuroraAction(el,"look-around",1500);
+  nextAmbientMotion=now+5200+Math.random()*4200;
+}
+function approach(value,target,delta){
+  if(value<target)return Math.min(target,value+delta);
+  if(value>target)return Math.max(target,value-delta);
+  return target;
+}
+
+
 function show(s){screens.forEach(x=>x.classList.remove("active"));s.classList.add("active")}
 function say(t){dialogText.textContent=t;state.idle=performance.now()}
 function objective(t,n){$("objective").textContent=t;$("progress").textContent=n+" / 4"}
@@ -350,6 +392,7 @@ $("vision").onclick=()=>{
  plate.classList.toggle("glow",state.vision && state.stage<2);
  eyeWall.classList.toggle("ready",state.vision && state.stage>=2 && !state.eyeOpened);
  aurora.classList.add("observe");
+ pulseAuroraAction(aurora,"study-object",1450);
  setTimeout(()=>aurora.classList.remove("observe"),1700);
  if(state.stage<2){
    say(state.vision?"Arkeologblikk: Den midterste steinen er mer slitt enn de andre.":"Arkeologblikk avsluttet.");
@@ -360,6 +403,13 @@ $("vision").onclick=()=>{
 
 $("interact").onclick=()=>{
  aurora.classList.add("observe");
+ if((state.stage===0 && state.x>=520) || state.stage===1){
+   pulseAuroraAction(aurora,"bend",1450);
+ }else if(state.stage===2 && state.nearEye){
+   pulseAuroraAction(aurora,"reach-object",1450);
+ }else{
+   pulseAuroraAction(aurora,"study-object",1350);
+ }
  setTimeout(()=>aurora.classList.remove("observe"),1700);
 
  if(state.stage===0){
@@ -449,35 +499,51 @@ window.addEventListener("keydown",e=>{
   }else if(chamber.classList.contains("active")){
     if(e.key==="ArrowLeft")chamberLeft=true;
     if(e.key==="ArrowRight")chamberRight=true;
-    if(e.key==="ArrowUp")chamberForward=true; if(e.key==="ArrowDown")chamberBack=true; if((e.key==="e"||e.key==="E") && !e.repeat)$("chamberInspect").click();
+    if((e.key==="e"||e.key==="E") && !e.repeat)$("chamberInspect").click();
   }else if(desert.classList.contains("active")){
     if(e.key==="ArrowLeft")desertLeft=true;
     if(e.key==="ArrowRight")desertRight=true;
-    if(e.key==="ArrowUp")desertForward=true; if(e.key==="ArrowDown")desertBack=true;
   }
 });
 window.addEventListener("keyup",e=>{
   if(e.key==="ArrowLeft"){state.left=false;chamberLeft=false;desertLeft=false;}
   if(e.key==="ArrowRight"){state.right=false;chamberRight=false;desertRight=false;}
-  if(e.key==="ArrowUp"){chamberForward=false;desertForward=false;} if(e.key==="ArrowDown"){chamberBack=false;desertBack=false;}
 });
 
 function loop(t){
  const dt=Math.min((t-state.last)/1000||0,.035);state.last=t;
 
- if(state.left){
-   state.x-=225*dt;
-   aurora.classList.add("face-left","walk");
- }
- if(state.right){
-   state.x+=225*dt;
-   aurora.classList.remove("face-left");
-   aurora.classList.add("walk");
- }
- if(!state.left&&!state.right)aurora.classList.remove("walk");
+ const movingInput=state.left||state.right;
+ const accel=780;
+ const maxSpeed=225;
+ const brake=920;
 
+ if(state.left&&!state.right){
+   mainVelocity=Math.max(-maxSpeed,mainVelocity-accel*dt);
+   setAuroraFacing(aurora,true);
+ }else if(state.right&&!state.left){
+   mainVelocity=Math.min(maxSpeed,mainVelocity+accel*dt);
+   setAuroraFacing(aurora,false);
+ }else{
+   mainVelocity=approach(mainVelocity,0,brake*dt);
+ }
+
+ if(Math.abs(mainVelocity)>5){
+   aurora.classList.add("walk");
+ }else{
+   if(aurora.classList.contains("walk")){
+     aurora.classList.remove("walk");
+     aurora.classList.add("stop-step");
+     setTimeout(()=>aurora.classList.remove("stop-step"),220);
+   }
+   mainVelocity=0;
+ }
+
+ state.x+=mainVelocity*dt;
  state.x=Math.max(60,Math.min(2180,state.x));
+ if(state.x===60||state.x===2180)mainVelocity=0;
  aurora.style.left=state.x+"px";
+ ambientAurora(aurora,movingInput||Math.abs(mainVelocity)>5);
 
  updateNearEye();
 
@@ -503,11 +569,11 @@ function loop(t){
  requestAnimationFrame(loop);
 }
 
-/* ---------- GRAVKAMMER 4.6 ---------- */
+/* ---------- GRAVKAMMER · v5.6 BASIC ---------- */
 const chamber=$("chamber"),journal=$("journal"),desert=$("desert"),chamberAurora=$("chamberAurora"),chamberCamera=$("chamberCamera"),innerDoor=$("innerDoor"),cinematicBars=$("cinematicBars"),transitionFade=$("transitionFade"),chamberExitFade=$("chamberExitFade"),inventoryBadge=$("inventoryBadge");
 const chamberText=$("chamberDialogText"),chamberObjective=$("chamberObjective"),chamberProgress=$("chamberProgress");
 const sarcophagus=$("sarcophagus"),symbolPuzzle=$("symbolPuzzle"),treasureChest=$("treasureChest"),compassArtifact=$("compassArtifact");
-let chamberX=7,chamberDepth=0.52,chamberLeft=false,chamberRight=false,chamberForward=false,chamberBack=false,chamberStage=0,glyphs=[],compassCollected=storage.get("aurora_compass_v521")==="yes";
+let chamberX=7,chamberLeft=false,chamberRight=false,chamberStage=0,glyphs=[],compassCollected=storage.get("aurora_compass_v521")==="yes";
 
 function chamberSay(text){chamberText.textContent=text}
 function chamberGoal(text,n){chamberObjective.textContent=text;chamberProgress.textContent=n+" / 3"}
@@ -534,9 +600,8 @@ enterChamberBtn.onclick=()=>{
     chamberCamera.style.filter="";
     chamberCamera.classList.remove("settled");
     chamberCamera.classList.add("entering");
-    chamberX=3; chamberDepth=.50;
+    chamberX=3;
     chamberAurora.style.left=chamberX+"%";
-    chamberAurora.style.setProperty("--depth",chamberDepth);
     chamberAurora.classList.add("walk");
     chamberStage=0;
     glyphs=[];
@@ -577,8 +642,6 @@ function chamberHold(id,key){
 }
 chamberHold("chamberLeft","left");
 chamberHold("chamberRight","right");
-bindHoldButton("chamberForward",()=>chamberForward=true,()=>chamberForward=false);
-bindHoldButton("chamberBack",()=>chamberBack=true,()=>chamberBack=false);
 
 symbolPuzzle.querySelectorAll("button").forEach(button=>{
   button.onclick=()=>{
@@ -604,6 +667,7 @@ symbolPuzzle.querySelectorAll("button").forEach(button=>{
 
 $("chamberInspect").onclick=()=>{
   if(chamberStage===0){
+    pulseAuroraAction(chamberAurora,"study-object",1450);
     if(chamberX<30){
       chamberSay("Jeg må gå nærmere hieroglyfene i midten av kammeret.");
       return;
@@ -622,12 +686,12 @@ $("chamberInspect").onclick=()=>{
       chamberSay("Jeg må stå nærmere gullkisten.");
       return;
     }
+    pulseAuroraAction(chamberAurora,"bend",1250);
     chamberStage=3;
     // v5.5.5: lock Aurora in front of the chest during the compass interaction.
     chamberLeft=false; chamberRight=false; chamberVelocity=0;
-    chamberX=40; chamberDepth=.64;
+    chamberX=40;
     chamberAurora.style.left=chamberX+"%";
-    chamberAurora.style.setProperty("--depth",chamberDepth);
     chamberAurora.classList.remove("walk","face-left","start-step");
     chamberAurora.classList.add("compass-front");
     treasureChest.classList.add("open");
@@ -641,6 +705,7 @@ compassArtifact.onclick=()=>{
   if(chamberStage!==3 || compassCollected)return;
   chamberLeft=false; chamberRight=false; chamberVelocity=0;
   chamberAurora.classList.add("compass-front","compass-reach");
+  pulseAuroraAction(chamberAurora,"reach-object",800);
   compassArtifact.classList.add("collected");
   setTimeout(()=>show(journal),450);
 };
@@ -652,6 +717,8 @@ $("closeJournal").onclick=()=>{
   }
   show(chamber);
   chamberAurora.classList.remove("compass-reach");
+  chamberAurora.classList.add("hold-compass");
+  setTimeout(()=>chamberAurora.classList.remove("hold-compass"),2600);
   compassArtifact.classList.add("collected");
   treasureChest.classList.add("finished");
   inventoryBadge.classList.remove("hidden");
@@ -664,7 +731,8 @@ $("closeJournal").onclick=()=>{
   chamberVelocity=0;
 
   setTimeout(()=>{
-    chamberAurora.classList.add("face-left","walk");
+    setAuroraFacing(chamberAurora,true);
+    chamberAurora.classList.add("walk");
     const exitWalk=setInterval(()=>{
       chamberX-=1.05;
       chamberAurora.style.left=chamberX+"%";
@@ -683,7 +751,7 @@ function chamberLoop(){
   if(chamber.classList.contains("active")){
     if(chamberStage===3 && !compassCollected){
       chamberLeft=false; chamberRight=false; chamberVelocity=0;
-      chamberX=40; chamberDepth=.64; chamberAurora.style.left=chamberX+"%"; chamberAurora.style.setProperty("--depth",chamberDepth);
+      chamberX=40; chamberAurora.style.left=chamberX+"%";
       chamberAurora.classList.remove("walk","face-left","start-step");
       chamberAurora.classList.add("compass-front");
       requestAnimationFrame(chamberLoop); return;
@@ -692,10 +760,11 @@ function chamberLoop(){
 
     if(chamberLeft){
       chamberVelocity=Math.max(chamberVelocity-.07,-.56);
-      chamberAurora.classList.add("face-left","walk","start-step");
+      setAuroraFacing(chamberAurora,true);
+      chamberAurora.classList.add("walk","start-step");
     }else if(chamberRight){
       chamberVelocity=Math.min(chamberVelocity+.07,.56);
-      chamberAurora.classList.remove("face-left");
+      setAuroraFacing(chamberAurora,false);
       chamberAurora.classList.add("walk","start-step");
     }else{
       chamberVelocity*=.72;
@@ -712,28 +781,24 @@ function chamberLoop(){
 
     chamberX+=chamberVelocity;
     chamberX=Math.max(4,Math.min(83,chamberX));
-    if(chamberForward){chamberDepth=Math.min(.78,chamberDepth+.0045); chamberAurora.classList.add("walk","walk-forward");}
-    else if(chamberBack){chamberDepth=Math.max(.36,chamberDepth-.0045); chamberAurora.classList.add("walk","walk-back");}
-    else{chamberAurora.classList.remove("walk-forward","walk-back");}
     chamberAurora.style.left=chamberX+"%";
-    chamberAurora.style.setProperty("--depth",chamberDepth);
+    ambientAurora(chamberAurora,accelerating||Math.abs(chamberVelocity)>.025);
   }
   requestAnimationFrame(chamberLoop);
 }
 requestAnimationFrame(chamberLoop);
 
 
-/* ---------- ØRKENSCENE 4.8 ---------- */
+/* ---------- ØRKENSCENE · v5.6 BASIC ---------- */
 const desertAurora=$("desertAurora"),desertText=$("desertDialogText"),chapterComplete=$("chapterComplete");
-let desertX=20,desertDepth=.56,desertLeft=false,desertRight=false,desertForward=false,desertBack=false,desertVelocity=0,desertStarted=false;
+let desertX=20,desertLeft=false,desertRight=false,desertVelocity=0,desertStarted=false;
 
 function desertSay(text){desertText.textContent=text}
 function startDesertScene(){
   show(desert);
   desertStarted=true;
-  desertX=20; desertDepth=.56;
+  desertX=20;
   desertAurora.style.left=desertX+"%";
-  desertAurora.style.setProperty("--depth",desertDepth);
   desertSay("Mykene får vente. Først må funnet dokumenteres ordentlig.");
   setTimeout(()=>{
     chapterComplete.classList.remove("hidden");
@@ -749,14 +814,13 @@ function desertHold(id,key){
 }
 desertHold("desertLeft","left");
 desertHold("desertRight","right");
-bindHoldButton("desertForward",()=>desertForward=true,()=>desertForward=false);
-bindHoldButton("desertBack",()=>desertBack=true,()=>desertBack=false);
 
 $("desertInspect").onclick=()=>{
-  desertAurora.classList.add("face-left");
+  setAuroraFacing(desertAurora,true);
+  pulseAuroraAction(desertAurora,"look-around",1500);
   desertSay("Historien har ventet i tre tusen år. Nå skal den dokumenteres med respekt.");
   setTimeout(()=>{
-    desertAurora.classList.remove("face-left");
+    setAuroraFacing(desertAurora,false);
     chapterComplete.classList.remove("hidden");
     chapterComplete.classList.add("ending-photo");
     if(fullscreenBtn) fullscreenBtn.style.display="none";
@@ -767,10 +831,11 @@ function desertLoop(){
   if(desert.classList.contains("active")){
     if(desertLeft){
       desertVelocity=Math.max(desertVelocity-.06,-.48);
-      desertAurora.classList.add("face-left","walk");
+      setAuroraFacing(desertAurora,true);
+      desertAurora.classList.add("walk");
     }else if(desertRight){
       desertVelocity=Math.min(desertVelocity+.06,.48);
-      desertAurora.classList.remove("face-left");
+      setAuroraFacing(desertAurora,false);
       desertAurora.classList.add("walk");
     }else{
       desertVelocity*=.72;
@@ -781,11 +846,8 @@ function desertLoop(){
     }
     desertX+=desertVelocity;
     desertX=Math.max(7,Math.min(82,desertX));
-    if(desertForward){desertDepth=Math.min(.78,desertDepth+.004); desertAurora.classList.add("walk","walk-forward");}
-    else if(desertBack){desertDepth=Math.max(.38,desertDepth-.004); desertAurora.classList.add("walk","walk-back");}
-    else{desertAurora.classList.remove("walk-forward","walk-back");}
     desertAurora.style.left=desertX+"%";
-    desertAurora.style.setProperty("--depth",desertDepth);
+    ambientAurora(desertAurora,desertLeft||desertRight||Math.abs(desertVelocity)>.02);
 
     if(desertX>70){
       $("desertObjective").textContent="Leiren er nådd";
@@ -798,7 +860,7 @@ requestAnimationFrame(desertLoop);
 
 })();
 
-// v5.3.2 mobile fullscreen / standalone
+// v5.6 mobile fullscreen / standalone
 const fullscreenBtn=document.getElementById("fullscreenBtn");
 const fullscreenHelp=document.getElementById("fullscreenHelp");
 const fullscreenHelpClose=document.getElementById("fullscreenHelpClose");
