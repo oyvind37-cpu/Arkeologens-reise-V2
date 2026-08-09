@@ -298,6 +298,7 @@ function openPrologue(){
   startMusic().catch(error=>console.log("Musikken kunne ikke starte, men introen fortsetter.",error));
 }
 
+if(fullscreenBtn) fullscreenBtn.style.display="none";
 startBtn.addEventListener("click",openPrologue);
 
 prologueNext.onclick=()=>{
@@ -849,13 +850,19 @@ let desertX=20,desertLeft=false,desertRight=false,desertVelocity=0,desertStarted
 function desertSay(text){desertText.textContent=text}
 function startDesertScene(){
   show(desert);
+  desert.classList.remove("ending-mode");
+  chapterComplete.classList.remove("ending-photo");
+  chapterComplete.classList.add("hidden");
   desertStarted=true;
   desertX=20;
   desertAurora.style.left=desertX+"%";
   desertSay("Mykene får vente. Først må funnet dokumenteres ordentlig.");
   setTimeout(()=>{
+    if(desert.classList.contains("ending-mode")) return;
     chapterComplete.classList.remove("hidden");
-    setTimeout(()=>chapterComplete.classList.add("hidden"),3200);
+    setTimeout(()=>{
+      if(!chapterComplete.classList.contains("ending-photo")) chapterComplete.classList.add("hidden");
+    },3200);
   },900);
 }
 
@@ -874,6 +881,7 @@ $("desertInspect").onclick=()=>{
   desertSay("Historien har ventet i tre tusen år. Nå skal den dokumenteres med respekt.");
   setTimeout(()=>{
     setAuroraFacing(desertAurora,false);
+    desert.classList.add("ending-mode");
     chapterComplete.classList.remove("hidden");
     chapterComplete.classList.add("ending-photo");
     if(fullscreenBtn) fullscreenBtn.style.display="none";

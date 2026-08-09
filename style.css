@@ -2666,3 +2666,90 @@ button:disabled{cursor:default;}
   body:has(#desert.active) .fullscreen-btn,
   body:has(#journal.active) .fullscreen-btn{display:none!important;}
 }
+
+
+/* =========================================================
+   v5.6.5 – SAFARI polish / clean ending screen
+   ========================================================= */
+
+/* The fullscreen helper should not sit on top of the start screen. */
+body:has(#intro.active) .fullscreen-btn{display:none!important;}
+
+/* When the final photo is shown, it must own the whole screen. */
+#desert.ending-mode > :not(#chapterComplete){
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+#desert.ending-mode #chapterComplete{
+  display:flex!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+.chapter-complete.ending-photo{
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-height:none!important;
+  min-height:100%!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:#050302!important;
+  overflow:hidden!important;
+}
+.chapter-complete.ending-photo img{
+  width:100%!important;
+  height:100%!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  display:block!important;
+}
+
+/* Replace the flat mini-pyramids with low sand/stone mounds. */
+.camp{
+  position:absolute;
+  right:7%;
+  bottom:22%;
+  width:240px;
+  height:118px;
+}
+.tent{
+  position:absolute;
+  bottom:0;
+  width:92px;
+  height:34px;
+  clip-path:polygon(0 100%,8% 65%,22% 52%,36% 58%,50% 38%,67% 54%,80% 48%,92% 70%,100% 100%);
+  border-radius:18px 18px 10px 10px;
+  background:linear-gradient(180deg,#b7925e 0%,#9a7446 52%,#6f5436 100%);
+  filter:drop-shadow(0 8px 8px rgba(0,0,0,.32));
+  opacity:.92;
+}
+.tent-a{left:8px;transform:scale(1.02,.96)}
+.tent-b{left:88px;transform:scale(.86,.9)}
+.jeep{
+  position:absolute;
+  right:2px;
+  bottom:5px;
+  color:#4a3a2a;
+  font-size:2.1rem;
+  transform:scaleX(1.2);
+  opacity:.82;
+}
+.camp-light{
+  position:absolute;
+  left:104px;
+  bottom:16px;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#f0c36a;
+  box-shadow:0 0 14px rgba(255,190,95,.75);
+}
