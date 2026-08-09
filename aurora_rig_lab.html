@@ -4,28 +4,29 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#090603">
-<title>Aurora Vale – 3D Rig Lab v5.8.1</title>
-<link rel="stylesheet" href="aurora_rig_lab.css?v=581">
+<title>Aurora Vale – 3D Rig Lab v5.8.2</title>
+<link rel="stylesheet" href="aurora_rig_lab.css?v=582">
 </head>
 <body>
 <main class="lab-shell">
   <header class="lab-header">
     <div>
-      <small>ARKEOLOGENS REISE · v5.8.1</small>
+      <small>ARKEOLOGENS REISE · v5.8.2</small>
       <h1>Aurora Vale · 3D Rig Lab</h1>
-      <p>Separat arbeidsrom for kropp, 360° rotasjon og naturlig bevegelse.</p>
+      <p>Separat arbeidsrom for skjelett, tyngde, fotkontakt, 360° rotasjon og naturlig bevegelse.</p>
     </div>
     <a href="index.html" class="back-link">TIL SPILLET</a>
   </header>
 
   <section class="viewport-card">
-    <canvas id="rigCanvas" aria-label="3D-modell av Aurora Vale"></canvas>
+    <canvas id="rigCanvas" aria-label="Teknisk 3D-rigg av Aurora Vale"></canvas>
     <div class="viewport-hud top-left">
       <b id="motionLabel">IDLE</b>
       <span id="angleLabel">0°</span>
     </div>
     <div class="viewport-hud top-right">
       <span id="distanceLabel">0,0 m</span>
+      <span id="contactLabel">FOT: V+H</span>
     </div>
     <div class="hint">Dra med fingeren for å snu Aurora 360°</div>
     <aside id="referenceCard" class="reference-card hidden" aria-label="Godkjent 2D-referanse">
@@ -35,11 +36,34 @@
   </section>
 
   <section class="control-card">
-    <div class="button-grid">
-      <button id="walkForward" class="primary">▲ GÅ FREM</button>
-      <button id="walkBackward">▼ GÅ BAKOVER</button>
-      <button id="stopMotion">■ STOPP</button>
-      <button id="lookMotion">◉ BLIKK</button>
+    <div class="control-group">
+      <div class="group-title"><b>BEVEGELSE</b><span>helkropp · tyngde · fotkontakt</span></div>
+      <div class="button-grid movement-grid">
+        <button id="walkForward" class="primary">▲ GÅ FREM</button>
+        <button id="walkBackward">▼ GÅ BAKOVER</button>
+        <button id="turnLeft">↶ SNU VENSTRE</button>
+        <button id="turnRight">↷ SNU HØYRE</button>
+        <button id="stopMotion" class="wide">■ STOPP / IDLE</button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="group-title"><b>BLIKK</b><span>hodet leder · kroppen følger svakt</span></div>
+      <div class="button-grid look-grid">
+        <button data-look="left">← VENSTRE</button>
+        <button data-look="right">HØYRE →</button>
+        <button data-look="up">↑ OPP</button>
+        <button data-look="down">↓ NED</button>
+        <button data-look="center" class="wide">◎ NØYTRAL</button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="group-title"><b>INTERAKSJON</b><span>første arkeologiske handlinger</span></div>
+      <div class="button-grid action-grid">
+        <button id="bendPickup">⌄ BØY / PLUKK OPP</button>
+        <button id="studyObject">◉ STUDER OBJEKT</button>
+      </div>
     </div>
 
     <label class="slider-row">
@@ -48,21 +72,25 @@
     </label>
     <label class="slider-row">
       <span>GANGFART <b id="speedValue">0,85×</b></span>
-      <input id="speedSlider" type="range" min="45" max="125" value="85" step="1">
+      <input id="speedSlider" type="range" min="45" max="120" value="85" step="1">
     </label>
+  </section>
 
+  <section class="control-card debug-card">
+    <div class="group-title"><b>DEBUG</b><span>teknisk kontroll – skjules i ferdig spill</span></div>
     <div class="toggle-row">
-      <label><input id="bonesToggle" type="checkbox"> VIS LEDD</label>
+      <label><input id="bonesToggle" type="checkbox"> VIS SKJELETT/LEDD</label>
+      <label><input id="contactsToggle" type="checkbox" checked> VIS FOTKONTAKT</label>
       <label><input id="referenceToggle" type="checkbox"> VIS 2D-REFERANSE</label>
       <button id="resetRig" class="small">NULLSTILL</button>
     </div>
   </section>
 
   <section class="note-card">
-    <b>RIGGSTATUS</b>
-    <p>Denne modellen er en teknisk 3D-mannequin laget for å få proporsjoner, ledd, vektforskyvning og gangsyklus riktig. Den er ikke den endelige fotorealistiske Aurora-meshen.</p>
+    <b>RIGGSTATUS · PHASE 2</b>
+    <p>Dette er fortsatt en teknisk mannequin – ikke den endelige fotorealistiske Aurora-meshen. I v5.8.2 prioriteres riktig skjelett, proporsjoner, balanse, separate fremover-/bakoverganger, fotkontakt, vending, blikk og bøy/plukk-opp. Når bevegelsen er godkjent, kan samme rigg kles med Auroras endelige 3D-modell.</p>
   </section>
 </main>
-<script src="aurora_rig_lab.js?v=581"></script>
+<script src="aurora_rig_lab.js?v=582"></script>
 </body>
 </html>

@@ -1,10 +1,13 @@
 {
-  "name": "Arkeologens Reise",
-  "version": "5.8.1-aurora-cohesive-motion-plus-3d-rig-lab",
-  "entry": "index.html",
-  "platform": "HTML5 / GitHub Pages",
-  "prologue_scenes": 9,
-  "animation_engine": "CSS keyframes for production character + standalone native WebGL Aurora Rig Lab",
-  "keep_in_github": ["mystisk_musikk.mp3"],
-  "notes": "v5.8.1 corrects the marionette effect from v5.8.0: smaller limb travel, whole-body BLIKK, corrected character aspect ratio in the tomb, and gentler stops/turns. A separate aurora_rig_lab.html is included for 360-degree 3D body work, forward/backward gait, joint inspection and future Aurora development. The 3D figure is currently a procedural rig mannequin, not the final photorealistic Aurora mesh."
+  "version": "5.8.2",
+  "codename": "AURORA_STABILIZATION_RIG_LAB_PHASE_2",
+  "base": "5.7.2 stable gameplay + 5.8 approved content fixes",
+  "notes": [
+    "Production game restored to one coherent Aurora sprite; experimental six-piece 2D rig removed.",
+    "No layer rectangles/platform artifacts around Aurora in chamber/desert.",
+    "Field journal stays in a safe fixed UI lane and resets on a genuinely new game.",
+    "Approved geographic world map retained.",
+    "Warning-letter text updated.",
+    "Aurora 3D Rig Lab Phase 2: improved human proportions, smooth 360 rotation, forward/backward gait, grounded feet, look controls, natural turn tests, bend/pick-up test and rig/contact debugging."
+  ]
 }
