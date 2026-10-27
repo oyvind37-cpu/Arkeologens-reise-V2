@@ -2,23 +2,23 @@ extends Node3D
 ## First playable-scale terrain blockout. 200 x 200 metres; procedural geometry, no external assets.
 ## Coordinates: X/Z horizontal, Y vertical. Not surveyed terrain.
 const EXTENT := 200.0
-const GRID := 100
+const GRID := 220
 const ROCK := Color(0.55, 0.43, 0.30)
 var terrain: MeshInstance3D
 
 func _ready() -> void:
 	_build_terrain()
-	_build_path()
+	# No artificial path markers in the landscape preview.
 	_build_tomb()
 	_build_lighting()
 	_build_camera()
 
 func _height(x: float, z: float) -> float:
 	var valley := maxf(0.0, absf(x) - 21.0)
-	var cliff := pow(valley / 79.0, 1.65) * 37.0
-	var ridges := sin(x * 0.085 + sin(z * 0.045) * 1.7) * sin(z * 0.065) * 2.8
-	var erosion := sin(z * 0.027 + x * 0.012) * 2.0
-	var floor_noise := sin(x * 0.13) * cos(z * 0.09) * 0.45
+	var cliff := pow(valley / 79.0, 1.2) * 46.0
+	var ridges := (sin(x * 0.11 + sin(z * 0.055) * 2.1) * sin(z * 0.075) * 5.0 + sin(x * 0.31 + z * 0.13) * 1.6)
+	var erosion := (absf(sin(z * 0.045 + x * 0.09)) * -4.0 + sin(z * 0.021 + x * 0.013) * 3.0)
+	var floor_noise := sin(x * 0.13) * cos(z * 0.09) * 0.32
 	return cliff + (ridges + erosion) * smoothstep(16.0, 60.0, absf(x)) + floor_noise
 
 func _build_terrain() -> void:
@@ -47,10 +47,9 @@ func _build_terrain() -> void:
 	terrain = MeshInstance3D.new()
 	terrain.name = "ValleyTerrain_200m"
 	terrain.mesh = st.commit()
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = ROCK
-	mat.roughness = 0.98
-	terrain.material_override = mat
+	var mat := load("res://limestone.gdshader") as Shader
+	terrain.material_override = ShaderMaterial.new()
+	terrain.material_override.shader = mat
 	add_child(terrain)
 	var body := StaticBody3D.new()
 	body.name = "TerrainCollision"
@@ -116,22 +115,22 @@ func _build_lighting() -> void:
 	env.background_color = Color(0.65, 0.75, 0.83)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.78, 0.80, 0.85)
-	env.ambient_light_energy = 0.55
+	env.ambient_light_energy = 0.35
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	world.environment = env
 	add_child(world)
 	var sun := DirectionalLight3D.new()
 	sun.name = "LateAfternoonSun"
 	sun.rotation_degrees = Vector3(-38, -30, 0)
-	sun.light_energy = 1.6
+	sun.light_energy = 1.15
 	sun.shadow_enabled = true
 	add_child(sun)
 
 func _build_camera() -> void:
 	var camera := Camera3D.new()
 	camera.name = "OverviewCamera"
-	camera.position = Vector3(0, 28, 91)
-	camera.rotation_degrees = Vector3(-15, 0, 0)
+	camera.position = Vector3(0, 2.5, 82)
+	camera.rotation_degrees = Vector3(-5, 0, 0)
 	camera.fov = 72
 	camera.current = true
 	add_child(camera)
