@@ -17,7 +17,7 @@ func _ready() -> void:
 func _height(x: float, z: float) -> float:
 	var valley := maxf(0.0, absf(x) - 21.0)
 	var cliff := pow(valley / 79.0, 1.13) * 51.0
-	var strata_step := floor(cliff / 6.0) * 0.65 * smoothstep(24.0, 70.0, absf(x))
+	var strata_step: float = floorf(cliff / 6.0) * 0.65 * smoothstep(24.0, 70.0, absf(x))
 	var ridges := (sin(x * 0.11 + sin(z * 0.055) * 2.1) * sin(z * 0.075) * 5.0 + sin(x * 0.31 + z * 0.13) * 1.6)
 	var erosion := (absf(sin(z * 0.045 + x * 0.09)) * -4.0 + sin(z * 0.021 + x * 0.013) * 3.0)
 	var gullies := -pow(absf(sin(z * 0.115 + sin(x * 0.025) * 2.0)), 18.0) * 4.0 * smoothstep(25.0, 80.0, absf(x))
