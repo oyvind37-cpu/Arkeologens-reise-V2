@@ -112,10 +112,10 @@ func _build_lighting() -> void:
 	world.name = "EgyptAtmosphere"
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.65, 0.75, 0.83)
+	env.background_color = Color(0.36, 0.53, 0.69)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.78, 0.80, 0.85)
-	env.ambient_light_energy = 0.35
+	env.ambient_light_color = Color(0.66, 0.73, 0.83)
+	env.ambient_light_energy = 0.25
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	world.environment = env
 	add_child(world)
