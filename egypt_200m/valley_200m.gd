@@ -9,7 +9,7 @@ var terrain: MeshInstance3D
 func _ready() -> void:
 	_build_terrain()
 	# No artificial path markers in the landscape preview.
-	_build_tomb()
+	# Tomb blockout disabled until a rock-cut entrance is modeled.
 	_build_lighting()
 	_build_camera()
 
