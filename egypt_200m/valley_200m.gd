@@ -8,6 +8,7 @@ var terrain: MeshInstance3D
 
 func _ready() -> void:
 	_build_terrain()
+	_build_rock_scatter()
 	# No artificial path markers in the landscape preview.
 	# Tomb blockout disabled until a rock-cut entrance is modeled.
 	_build_lighting()
@@ -15,11 +16,13 @@ func _ready() -> void:
 
 func _height(x: float, z: float) -> float:
 	var valley := maxf(0.0, absf(x) - 21.0)
-	var cliff := pow(valley / 79.0, 1.2) * 46.0
+	var cliff := pow(valley / 79.0, 1.13) * 51.0
+	var strata_step := floor(cliff / 6.0) * 0.65 * smoothstep(24.0, 70.0, absf(x))
 	var ridges := (sin(x * 0.11 + sin(z * 0.055) * 2.1) * sin(z * 0.075) * 5.0 + sin(x * 0.31 + z * 0.13) * 1.6)
 	var erosion := (absf(sin(z * 0.045 + x * 0.09)) * -4.0 + sin(z * 0.021 + x * 0.013) * 3.0)
+	var gullies := -pow(absf(sin(z * 0.115 + sin(x * 0.025) * 2.0)), 18.0) * 4.0 * smoothstep(25.0, 80.0, absf(x))
 	var floor_noise := sin(x * 0.13) * cos(z * 0.09) * 0.32
-	return cliff + (ridges + erosion) * smoothstep(16.0, 60.0, absf(x)) + floor_noise
+	return cliff + strata_step + gullies + (ridges + erosion) * smoothstep(16.0, 60.0, absf(x)) + floor_noise
 
 func _build_terrain() -> void:
 	var vertices := PackedVector3Array()
@@ -57,6 +60,42 @@ func _build_terrain() -> void:
 	shape.shape = terrain.mesh.create_trimesh_shape()
 	body.add_child(shape)
 	add_child(body)
+
+func _build_rock_scatter() -> void:
+	# Deterministic, lightweight talus scatter; deliberately sparse on the walkable valley floor.
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20261027
+	var rock_mesh := SphereMesh.new()
+	rock_mesh.radius = 1.0
+	rock_mesh.height = 2.0
+	rock_mesh.radial_segments = 7
+	rock_mesh.rings = 4
+	var rock_material := StandardMaterial3D.new()
+	rock_material.albedo_color = Color(0.43, 0.35, 0.27)
+	rock_material.roughness = 1.0
+	rock_mesh.material = rock_material
+	var scatter := MultiMesh.new()
+	scatter.transform_format = MultiMesh.TRANSFORM_3D
+	scatter.instance_count = 1000
+	for i in range(scatter.instance_count):
+		var x := rng.randf_range(-97.0, 97.0)
+		var z := rng.randf_range(-97.0, 97.0)
+		var slope_factor := smoothstep(15.0, 85.0, absf(x))
+		# Shift most rubble toward the bases of the cliffs.
+		if rng.randf() > slope_factor:
+			x = (1.0 if x >= 0.0 else -1.0) * rng.randf_range(22.0, 65.0)
+		var size := rng.randf_range(0.15, 0.9)
+		if rng.randf() < 0.08:
+			size *= 2.8
+		var basis := Basis(Vector3.UP, rng.randf_range(0.0, TAU))
+		basis = basis.scaled(Vector3(size * rng.randf_range(1.0, 1.8), size * rng.randf_range(0.35, 0.8), size * rng.randf_range(0.7, 1.5)))
+		var pos := Vector3(x, _height(x, z) - size * 0.22, z)
+		scatter.set_instance_transform(i, Transform3D(basis, pos))
+	scatter.mesh = rock_mesh
+	var instance := MultiMeshInstance3D.new()
+	instance.name = "LimestoneTalus_1000"
+	instance.multimesh = scatter
+	add_child(instance)
 
 func _build_path() -> void:
 	# Sparse markers indicate the walkable valley route; replace with terrain-blended path.
